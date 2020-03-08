@@ -1,0 +1,15 @@
+---
+- name: Get Pods
+  shell:
+    cmd: |
+        mkdir -p /root/.tmphc
+        /usr/bin/cp /etc/origin/master/openshift-master.kubeconfig /root/.tmphc/kubeconfig
+        export KUBECONFIG="/root/.tmphc/kubeconfig"
+        oc get pods --all-namespaces -o json > /root/.tmphc/all_pods
+    warn: False
+
+- name: Copy oc-get-pods Output File Locally
+  fetch:
+    src: /root/.tmphc/all_pods
+    dest: .localtmphc/all_pods
+    flat: yes

@@ -1,0 +1,4 @@
+---
+- name: OpenShift Node Service Status
+  shell: uptime | rev | awk '{print $1}' | rev
+  register: node_load

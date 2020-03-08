@@ -1,0 +1,25 @@
+---
+- name: Get Core Pods
+  shell:
+    cmd: |
+      /usr/bin/env python2 <<ENDOFSCRIPT
+      import sys,json
+      ns=["default", "app-storage", "infra-storage" ]
+      core_pods=[]
+      with open(".localtmphc/all_pods") as pods_json:
+          pods=json.load(pods_json)["items"]
+          for p in pods:
+              if p["metadata"]["namespace"] in ns or p["metadata"]["namespace"].startswith("kube-") or p["metadata"]["namespace"].startswith("openshift-"):
+                  namespace=p["metadata"]["namespace"]
+                  name=p["metadata"]["name"]
+                  if p["spec"].has_key("nodeName"):
+                      node=p["spec"]["nodeName"]
+                  ready=next((c["status"] for c in p["status"]["conditions"] if c["type"] == "Ready"),"")
+                  images="\n".join([ c["image"].split('/')[-1] for c in p["spec"]["containers"] ])
+                  if ready != "True" or p["metadata"]["namespace"] in ['default','kube-system']:
+                    core_pods.append({'name':name,'ns':namespace,'ready':ready,'node':node,'images':images})
+          print json.dumps(core_pods)
+      ENDOFSCRIPT
+    warn: False
+  register: core_pods
+

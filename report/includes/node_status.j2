@@ -1,0 +1,46 @@
+<h3 style="text-align: center">Node Status</h3>
+
+<div class="container">
+    <table class="table table-hover table-sm table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Node</th>
+                <th scope="col">Ready</th>
+                <th scope="col">OutOfDisk</th>
+                <th scope="col">MemoryPressure</th>
+                <th scope="col">DiskPressure</th>
+                <th scope="col">PIDPressure</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for on in hostvars['localhost'].ordered_nodes.stdout | from_json %}
+                {% set n = hostvars['localhost'].node_info.stdout | from_json | json_query("[?name=='"+on+"']") | first %}
+                {%set err='<span class="badge badge-pill badge-danger">!</span>'%}
+                <tr>
+                    <th scope="row">
+                        {% include 'includes/sub/node_name.j2' %}
+                    </th>
+
+                    <td data-toggle="tooltip" data-placement="right" title="{{n['r_m']}}" class="{%if n['r']=='True'%}table-success{%else%}table-danger{%endif%}">
+                        {{n['r_r']|default(err)}}
+                    </td>
+                    <td data-toggle="tooltip" data-placement="right" title="{{n['ood_m']}}" class="{%if n['ood']=='False'%}table-success{%else%}table-danger{%endif%}">
+                        {{n['ood_r']|default(err)}}
+                    </td>
+                    <td data-toggle="tooltip" data-placement="right" title="{{n['mp_m']}}" class="{%if n['mp']=='False'%}table-success{%else%}table-danger{%endif%}">
+                        {{n['mp_r']|default(err)}}
+                    </td>
+                    <td data-toggle="tooltip" data-placement="right" title="{{n['dp_m']}}" class="{%if n['dp']=='False'%}table-success{%else%}table-danger{%endif%}">
+                        {{n['dp_r']|default(err)}}
+                    </td>
+                    <td data-toggle="tooltip" data-placement="right" title="{{n['pp_m']}}" class="{%if n['pp']=='False'%}table-success{%else%}table-danger{%endif%}">
+                        {{n['pp_r']|default(err)}}
+                    </td>
+
+                </tr>
+            {% endfor%}
+        </tbody>
+    </table>
+</div>
+<hr />
+<br />

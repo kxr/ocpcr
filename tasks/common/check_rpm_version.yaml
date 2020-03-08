@@ -1,0 +1,6 @@
+---
+- name: Atomic OpenShift Node RPM Version
+  shell:
+    cmd: rpm -q atomic-openshift-node | sed 's/atomic-openshift-node-\(.*\)/\1/'
+    warn: False
+  register: node_atomic_rpm

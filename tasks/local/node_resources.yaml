@@ -1,0 +1,88 @@
+---
+- name: Get Node Resource Utilization
+  shell:
+    cmd: |
+      /usr/bin/env python2 <<ENDOFSCRIPT
+      import sys,json
+      def normalize_cpu(c):
+          if c.replace(".","",1).isdigit():
+              return float(c)*1000
+          elif c[-1:] == "m" and c[0:-1].replace(".","",1).isdigit():
+              return float(c[0:-1])
+          else:
+              return 0
+      def normalize_mem(m):
+          if m.replace(".","",1).isdigit():
+              return float(m)
+          elif m[0:-1].replace(".","",1).isdigit():
+              if m[-1:] == "K":
+                  return float(m[0:-1])*1000
+              elif m[-1:] == "M":
+                  return float(m[0:-1])*1000*1000
+              elif m[-1:] == "G":
+                  return float(m[0:-1])*1000*1000*1000
+              elif m[-1:] == "T":
+                  return float(m[0:-1])*1000*1000*1000*1000
+              elif m[-1:] == "P":
+                  return float(m[0:-1])*1000*1000*1000*1000*1000
+              else:
+                  return 0
+          elif m[0:-2].replace(".","",1).isdigit():
+              if m[-2:] == "Ki":
+                  return float(m[0:-2])*1024
+              elif m[-2:] == "Mi":
+                  return float(m[0:-2])*1024*1024
+              elif m[-2:] == "Gi":
+                  return float(m[0:-2])*1024*1024*1024
+              elif m[-2:] == "Ti":
+                  return float(m[0:-2])*1024*1024*1024*1024
+              elif m[-2:] == "Ti":
+                  return float(m[0:-2])*1024*1024*1024*1024*1024
+              else:
+                  return 0
+          else:
+              return 0
+      nodes_res={}
+      nodes_res["Unassigned"]={"cpu_req":0,"cpu_lim":0,"mem_req":0,"mem_lim":0,"all_cpu":0,"all_mem":0,"all_pod":0}
+      nodes=[]
+      with open(".localtmphc/all_nodes") as nodes_json:
+          nodes=json.load(nodes_json)["items"]
+      pods=[]
+      with open(".localtmphc/all_pods") as pods_json:
+          pods=json.load(pods_json)["items"]
+      for n in nodes:
+          nname=n["metadata"]["name"]
+          all_cpu=normalize_cpu(n["status"]["allocatable"]["cpu"])
+          all_mem=normalize_mem(n["status"]["allocatable"]["memory"])
+          all_pod=int(n["status"]["allocatable"]["pods"])
+          nodes_res[nname]={"cpu_req":0,"cpu_lim":0,"mem_req":0,"mem_lim":0,"all_cpu":all_cpu,"all_mem":all_mem,"all_pod":all_pod}
+          for p in pods:
+              if p["spec"].has_key("nodeName") and p["spec"]["nodeName"]==nname:
+                  x=nname
+              elif not p["spec"].has_key("nodeName"):
+                  x='Unassigned'
+              else:
+                  continue 
+              for c in p["spec"]["containers"]:
+                  if len(c["resources"]) > 0:
+                      if c["resources"].has_key("requests"):
+                          if c["resources"]["requests"].has_key("cpu"):
+                              nodes_res[x]["cpu_req"] += normalize_cpu(c["resources"]["requests"]["cpu"])
+                          if c["resources"]["requests"].has_key("memory"):
+                              nodes_res[x]["mem_req"] += normalize_mem(c["resources"]["requests"]["memory"])
+                      if c["resources"].has_key("limits"):
+                          if c["resources"]["limits"].has_key("cpu"):
+                              nodes_res[x]["cpu_lim"] += normalize_cpu(c["resources"]["limits"]["cpu"])
+                          if c["resources"]["limits"].has_key("memory"):
+                              nodes_res[x]["mem_lim"] += normalize_mem(c["resources"]["limits"]["memory"])
+      nodes_res_list=[]
+      for n,r in nodes_res.items():
+          r["name"]=n
+          nodes_res_list.append(r)
+      print json.dumps(nodes_res_list)
+      ENDOFSCRIPT
+    warn: False
+  register: node_resources
+
+#- debug:
+#    var: node_resources

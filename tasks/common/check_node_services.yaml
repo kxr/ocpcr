@@ -1,0 +1,20 @@
+---
+- name: OpenShift Node Service Status
+  shell: systemctl is-active {{ item }}
+  register: node_services_status
+  loop:
+    - atomic-openshift-node.service
+    - dnsmasq.service
+    - docker.service
+    - chronyd.service
+  ignore_errors: yes
+
+- name: OpenShift Node Service Enabled
+  shell: systemctl is-enabled {{ item }}
+  register: node_services_enabled
+  loop:
+    - atomic-openshift-node.service
+    - dnsmasq.service
+    - docker.service
+    - chronyd.service
+  ignore_errors: yes

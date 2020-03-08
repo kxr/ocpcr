@@ -1,0 +1,45 @@
+---
+- name: ETCD Cluster Health
+  shell:
+    cmd: |
+        source /etc/etcd/etcd.conf
+        etcdctl --cert-file=$ETCD_PEER_CERT_FILE --key-file=$ETCD_PEER_KEY_FILE --ca-file=/etc/etcd/ca.crt --endpoints=$ETCD_LISTEN_CLIENT_URLS cluster-health
+    warn: False
+  register: etcd_cluster_health
+  ignore_errors: yes
+
+- name: ETCD Member List
+  shell:
+    cmd: |
+        source /etc/etcd/etcd.conf
+        etcdctl --cert-file=$ETCD_PEER_CERT_FILE --key-file=$ETCD_PEER_KEY_FILE --ca-file=/etc/etcd/ca.crt --endpoints=$ETCD_LISTEN_CLIENT_URLS member list
+    warn: False
+  register: etcd_member_list
+  ignore_errors: yes
+
+- name: ETCD Data Disk
+  shell:
+    cmd: |
+        source /etc/etcd/etcd.conf
+        df $ETCD_DATA_DIR --output=source | sed 1d | awk '{print $1}'
+    warn: False
+  register: etcd_data_disk
+  ignore_errors: yes
+
+- name: ETCD Disk Size
+  shell:
+    cmd: |
+        source /etc/etcd/etcd.conf
+        df $ETCD_DATA_DIR --output=size -B1 | sed 1d | awk '{print $1}'
+    warn: False
+  register: etcd_disk_size
+  ignore_errors: yes
+
+- name: ETCD Disk Used
+  shell:
+    cmd: |
+        source /etc/etcd/etcd.conf
+        df $ETCD_DATA_DIR --output=used -B1 | sed 1d | awk '{print $1}'
+    warn: False
+  register: etcd_disk_used
+  ignore_errors: yes

@@ -1,0 +1,65 @@
+---
+#
+# Running Common System Checks On All Nodes
+#
+- hosts: nodes
+  tasks:
+  - import_tasks: tasks/common/check_node_services.yaml
+  - import_tasks: tasks/common/check_rpm_version.yaml
+  - import_tasks: tasks/common/check_load.yaml
+
+#
+# Get Cluster Info Using `oc` On First Master
+# Change the index of masters[0] to run on different master
+#
+- hosts: masters[0]
+  tasks:
+  - import_tasks: tasks/cluster/get_nodes.yaml
+  - import_tasks: tasks/cluster/get_pods.yaml
+  - import_tasks: tasks/cluster/get_events.yaml
+
+#
+# Get ETCD Info, from all etcd nodes
+#
+- hosts: etcd
+  tasks:
+  - import_tasks: tasks/etcd/etcd_info.yaml
+
+#
+# Process Cluster Info Locally
+#
+- hosts: localhost
+  connection: local
+  tasks:
+  - import_tasks: tasks/local/node_info.yaml
+  - import_tasks: tasks/local/node_resources.yaml
+  - import_tasks: tasks/local/pod_stats.yaml
+  - import_tasks: tasks/local/core_pods.yaml
+
+
+#
+# Generating the Final Report
+# Output: Health_Check_Report_<date>.html 
+#
+- hosts: localhost
+  connection: local
+  tasks:
+  - import_tasks: report/generate_report.yaml
+
+#
+# Email the report
+#
+- hosts: localhost
+  connection: local
+  vars:
+    email_report: False
+    email_from: khizernaeem@gmail.com (OpenShift Health Check)
+    email_recipients:
+      - khizernaeem@gmail.com
+      - knaeem@redhat.com
+    smtp_host: smtp.gmail.com
+    smtp_port: 587
+    smtp_user: khizernaeem@gmail.com
+    smtp_pass: xxxxxx
+  tasks:
+  - import_tasks: report/email_report.yaml

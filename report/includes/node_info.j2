@@ -1,0 +1,80 @@
+<h3 style="text-align: center">Node Versions</h3>
+
+<div class="container">
+    <table class="table table-hover table-sm table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Node Name</th>
+                <th scope="col">RHEL</th>
+                <th scope="col">Atomic RPM</th>
+                <th scope="col">Kernel Version</th>
+                <th scope="col">Kubelet</th>
+                <th scope="col">Container Runtime</th>
+                <th scope="col">BIOS</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for on in hostvars['localhost'].ordered_nodes.stdout | from_json %}
+                {% set n = hostvars['localhost'].node_info.stdout | from_json | json_query("[?name=='"+on+"']") | first %}
+                <tr>
+                    <th scope="row">
+                        {% include 'includes/sub/node_name.j2' %}
+                    </th>
+                    <td>
+                        {% if 'ansible_distribution_version' in hostvars[n['name']] %}
+                            {{ hostvars[n['name']].ansible_distribution_version }}
+                        {% else %}
+                            <!-- search hostvars based on ansible_fqdn for cases where inventory hostname != node name -->
+                            {% set xname = hostvars | to_json | from_json | dict2items | json_query("[?value.ansible_fqdn=='"+n['name']+"'].key") | first %}
+                            {% if xname | length  %}
+                                {{ hostvars[xname].ansible_distribution_version }}
+                            {%else%}
+                                <span class="badge badge-pill badge-danger">!</span>
+                            {%endif%}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if 'node_atomic_rpm' in hostvars[n['name']] %}
+                            {{hostvars[n['name']].node_atomic_rpm.stdout }}
+                        {% else %}
+                            <!-- search hostvars based on ansible_fqdn for cases where inventory hostname != node name -->
+                            {% set xname = hostvars | to_json | from_json | dict2items | json_query("[?value.ansible_fqdn=='"+n['name']+"'].key") | first %}
+                            {% if xname | length  %}
+                                {{ hostvars[xname].node_atomic_rpm.stdout }}
+                            {%else%}
+                                <span class="badge badge-pill badge-danger">!</span>
+                            {%endif%}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{n["kerv"]}}
+                    </td>
+                    <td>
+                        {{n["kubev"]}}
+                        {%if n["kubev"]!=n["kubepv"]%}
+                            <span class="badge badge-pill badge-danger">!</span>
+                        {%endif%}
+                    </td>
+                    <td>
+                        {{n["crv"]}}
+                    </td>
+                    <td>
+                        {% if 'ansible_bios_version' in hostvars[n['name']] %}
+                            {{hostvars[n['name']].ansible_bios_version }}
+                        {% else %}
+                            <!-- search hostvars based on ansible_fqdn for cases where inventory hostname != node name -->
+                            {% set xname = hostvars | to_json | from_json | dict2items | json_query("[?value.ansible_fqdn=='"+n['name']+"'].key") | first %}
+                            {% if xname | length  %}
+                                {{ hostvars[xname].ansible_bios_version }}
+                            {%else%}
+                                <span class="badge badge-pill badge-danger">!</span>
+                            {%endif%}
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor%}
+        </tbody>
+    </table>
+</div>
+<hr />
+<br />

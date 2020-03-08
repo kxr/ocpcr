@@ -1,0 +1,95 @@
+<h3 style="text-align: center">Node Resources</h3>
+
+<div class="container">
+    <table class="table table-hover table-sm table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col" rowspan="2">Node</th>
+                <th scope="col" colspan="3">CPU (millicores)</th>
+                <th scope="col" colspan="3">Memory</th>
+            </tr>
+            <tr>
+                <th scope="col">Total</th>
+                <th scope="col">Requests</th>
+                <th scope="col">Limits</th>
+                <th scope="col">Total</th>
+                <th scope="col">Requests</th>
+                <th scope="col">Limits</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            {% for on in hostvars['localhost'].ordered_nodes.stdout | from_json %}
+                {% set n = hostvars['localhost'].node_resources.stdout | from_json | json_query("[?name=='"+on+"']") | first %}
+
+                {% set cpu_req_per = n['cpu_req'] / n['all_cpu'] * 100 if n['all_cpu'] > 0 else 0 %}
+                {% set cpu_lim_per = n['cpu_lim'] / n['all_cpu'] * 100 if n['all_cpu'] > 0 else 0 %}
+                {% set mem_req_per = n['mem_req'] / n['all_mem'] * 100 if n['all_mem'] > 0 else 0 %}
+                {% set mem_lim_per = n['mem_lim'] / n['all_mem'] * 100 if n['all_mem'] > 0 else 0 %}
+            <tr>
+                <th scope="row">
+                    {% include 'includes/sub/node_name.j2' %}
+                </th>
+
+                <td>{{ n['all_cpu'] | int }}m</td>
+
+                <td>
+                    {{ n['cpu_req'] | int }}m
+                    <div class="progress">
+                        <div class="progress-bar {% if cpu_req_per > 85 %}bg-danger{%elif cpu_req_per > 75%}bg-warning{% endif %}" role="progressbar" style="width: {{cpu_req_per|int}}%;" aria-valuenow="{{cpu_req_per|int}}" aria-valuemin="0" aria-valuemax="100">
+                            {{cpu_req_per|int}}%
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    {{ n['cpu_lim'] | int }}m
+                    <div class="progress">
+                        <div class="progress-bar {% if cpu_lim_per > 85 %}bg-danger{%elif cpu_lim_per > 75%}bg-warning{% endif %}" role="progressbar" style="width: {{cpu_lim_per|int}}%;" aria-valuenow="{{cpu_lim_per|int}}" aria-valuemin="0" aria-valuemax="100">
+                            {{cpu_lim_per|int}}%
+                        </div>
+                    </div> 
+                </td>
+
+                <td>{{ n['all_mem'] | filesizeformat }}</td>
+
+                <td>
+                    {{ n['mem_req'] | filesizeformat }}
+                    <div class="progress">
+                        <div class="progress-bar {% if mem_req_per > 85 %}bg-danger{%elif mem_req_per > 75%}bg-warning{% endif %}" role="progressbar" style="width: {{mem_req_per|int}}%;" aria-valuenow="{{mem_req_per|int}}" aria-valuemin="0" aria-valuemax="100">
+                            {{mem_req_per|int}}%
+                        </div>
+                    </div>
+                </td>
+
+                <td>
+                    {{ n['mem_lim'] | filesizeformat }}
+                    <div class="progress">
+                        <div class="progress-bar {% if mem_lim_per > 85 %}bg-danger{%elif mem_lim_per > 75%}bg-warning{% endif %}" role="progressbar" style="width: {{mem_lim_per|int}}%;" aria-valuenow="{{mem_lim_per|int}}" aria-valuemin="0" aria-valuemax="100">
+                            {{mem_lim_per|int}}%
+                        </div>
+                    </div>
+                </td>
+
+            </tr>
+            {% endfor %}
+            <tr>
+                {% set ua = hostvars['localhost'].node_resources.stdout | from_json | json_query("[?name=='Unassigned']") | first %}
+                {% set unass_cpu_req = ua['cpu_req'] | int %}
+                {% set unass_cpu_lim = ua['cpu_lim'] | int %}
+                {% set unass_mem_req = ua['mem_req'] | int %}
+                {% set unass_mem_lim = ua['mem_lim'] | int %}
+                <th scope="row">Unassigned</th>
+                <td></td>
+                <td class="{% if unass_cpu_req > 0 %}table-danger{% endif %}">{{unass_cpu_req}}m</td>
+                <td class="{% if unass_cpu_lim > 0 %}table-danger{% endif %}">{{unass_cpu_lim}}m</td>
+                <td></td>
+                <td class="{% if unass_mem_req > 0 %}table-danger{% endif %}">{{unass_mem_req | filesizeformat}}</td>
+                <td class="{% if unass_mem_lim > 0 %}table-danger{% endif %}">{{unass_mem_lim | filesizeformat}}</td>
+            </tr>
+            <!-- TODO: A Row Displaying total cluster capacity, total requests/limits--!>
+        </tbody>
+    </table>
+</div>
+<br />
+<hr />
+<br />

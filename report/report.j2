@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <title>OpenShift 3 Health Check Report </title>
+        {% include 'includes/styles.j2' %}
+    </head>
+    <body>
+        {% include 'includes/header.j2' %}
+        <br />
+        {% include 'includes/system_resources.j2' %}
+        {% include 'includes/system_services.j2' %}
+        {% include 'includes/node_resources.j2' %}
+        {% include 'includes/node_info.j2' %}
+        {% include 'includes/node_status.j2' %}
+        {% include 'includes/pod_stats.j2' %}
+        {% include 'includes/core_pods.j2' %}
+        {% include 'includes/etcd_health.j2' %}
+        <br />
+        {% include 'includes/footer.j2' %}
+
+        {% include 'includes/javascript.j2' %}
+  </body>
+</html>

@@ -1,0 +1,107 @@
+<h3 style="text-align: center">Pods Statistics</h3>
+
+<div class="container">
+    <table class="table table-striped table-hover table-sm table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col" rowspan="2">Node</th>
+                <th scope="col" rowspan="2">Capacity</th>
+                <th scope="col" rowspan="2" data-toggle="tooltip" data-placement="right" title="Total Pods Running On Node">Total</th>
+                <th scope="col" colspan="4" class="text-center">Pod Conditions</th>
+            <tr>
+                <th scope="col" data-toggle="tooltip" data-placement="right" title="Pods With Ready Condition">Ready?</th>
+                <th scope="col" data-toggle="tooltip" data-placement="right" title="Pods With ContainersReady Condition">cReady?</th>
+                <th scope="col" data-toggle="tooltip" data-placement="right" title="Pods With Initialized Condition">Init?</th>
+                <th scope="col" data-toggle="tooltip" data-placement="right" title="Pods With PodScheduled Condition">Sched?</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for on in hostvars['localhost'].ordered_nodes.stdout | from_json %}
+                {% set n = hostvars['localhost'].pod_stats.stdout | from_json | json_query("[?name=='"+on+"']") | first %}
+            <tr>
+                <th scope="row">{% include 'includes/sub/node_name.j2' %}</th>
+
+                <td>{{n['cap']}}</td>
+
+                <td class="table-{%if n['t']/n['cap']*100 > 75%}danger{%else%}success{%endif%}">{{n['t']}}</td>
+                <td>
+                    <span class="badge badge-pill badge-success">{{n['r']}} Yes</span>
+                    {%if n['nr'] > 0 %}
+                    <span class="badge badge-pill badge-danger">{{n['nr']}} No</span>
+                    {%else%}
+                    <span class="badge badge-pill badge-success">{{n['nr']}} No</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <span class="badge badge-pill badge-success">{{n['cr']}} Yes</span>
+                    {%if n['cnr'] > 0 %}
+                    <span class="badge badge-pill badge-danger">{{n['cnr']}} No</span>
+                    {%else%}
+                    <span class="badge badge-pill badge-success">{{n['cnr']}} No</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <span class="badge badge-pill badge-success">{{n['i']}} Yes</span>
+                    {%if n['ni'] > 0 %}
+                    <span class="badge badge-pill badge-danger">{{n['ni']}} No</span>
+                    {%else%}
+                    <span class="badge badge-pill badge-success">{{n['ni']}} No</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <span class="badge badge-pill badge-success">{{n['i']}} Yes</span>
+                    {%if n['pns'] > 0 %}
+                    <span class="badge badge-pill badge-danger">{{n['ni']}} No</span>
+                    {%else%}
+                    <span class="badge badge-pill badge-success">{{n['ni']}} No</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+
+            {% set ua = hostvars['localhost'].pod_stats.stdout | from_json | json_query("[?name=='Unassigned']") | first %}
+            <tr>
+                <th scope="row">Unassigned</th>
+                <td></td>
+                {%if ua['t'] > 0%}
+                <td class="table-danger">{{ua['t']}}</td>
+                {%endif%}
+                <td>
+                    {%if ua['r'] > 0 %}
+                    <span class="badge badge-pill badge-success">{{ua['r']}}</span>
+                    {% endif %}
+                    {%if ua['nr'] > 0 %}
+                    <span class="badge badge-pill badge-danger">{{ua['nr']}}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {%if ua['cr'] > 0 %}
+                    <span class="badge badge-pill badge-success">{{ua['cr']}}</span>
+                    {% endif %}
+                    {%if ua['cnr'] > 0 %}
+                    <span class="badge badge-pill badge-danger">{{ua['cnr']}}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {%if ua['i'] > 0 %}
+                    <span class="badge badge-pill badge-success">{{ua['i']}}</span>
+                    {% endif %}
+                    {%if ua['ni'] > 0 %}
+                    <span class="badge badge-pill badge-danger">{{ua['ni']}}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {%if ua['ps'] > 0 %}
+                    <span class="badge badge-pill badge-success">{{ua['i']}}</span>
+                    {% endif %}
+                    {%if ua['pns'] > 0 %}
+                    <span class="badge badge-pill badge-danger">{{ua['ni']}}</span>
+                    {% endif %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<br />
+<hr />
+<br />

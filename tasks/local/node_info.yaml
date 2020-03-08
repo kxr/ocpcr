@@ -1,0 +1,91 @@
+---
+- name: Create Ordered List of Nodes
+  shell:
+    cmd: |
+      /usr/bin/env python2 <<ENDOFSCRIPT
+      import sys,json
+      ordered_nodes=[]
+      masters=[]
+      infras=[]
+      glusters=[]
+      workers=[]
+      catchall=[]
+      nodes=[]
+      with open(".localtmphc/all_nodes") as nodes_json:
+          nodes=json.load(nodes_json)["items"]
+      for n in nodes:
+          name=n["metadata"]["name"]
+          labels="\n".join([":".join([k,v]) for k,v in n["metadata"]["labels"].items()])
+          if 'node-role.kubernetes.io/master:true' in labels:
+              masters.append(name)
+          elif 'node-role.kubernetes.io/infra:true' in labels:
+              infras.append(name)
+          elif 'glusterfs:' in labels:
+              glusters.append(name)
+          elif 'node-role.kubernetes.io/compute:true' in labels:
+              workers.append(name)
+          else:
+              catchall.append(name)
+      if(len(masters)>0):
+          masters.sort()
+          [ordered_nodes.append(m) for m in masters]
+      if(len(infras)>0):
+          infras.sort()
+          [ordered_nodes.append(i) for i in infras]
+      if(len(glusters)>0):
+          glusters.sort()
+          [ordered_nodes.append(g) for g in glusters]
+      if(len(workers)>0):
+          workers.sort()
+          [ordered_nodes.append(w) for w in workers]
+      if(len(catchall)>0):
+          catchall.sort()
+          [ordered_nodes.append(c) for c in catchall]
+      print(json.dumps(ordered_nodes))
+      ENDOFSCRIPT
+    warn: False
+  register: ordered_nodes
+
+- name: Get Node Info
+  shell:
+    cmd: |
+      /usr/bin/env python2 <<ENDOFSCRIPT
+      import sys,json
+      with open(".localtmphc/all_nodes") as nodes_json:
+          nodes=json.load(nodes_json)["items"]
+          nodeinfo=[]
+          for n in nodes:
+              name=n["metadata"]["name"]
+              labels="\n".join([":".join([k,v]) for k,v in n["metadata"]["labels"].items()])
+
+              kerv=n["status"]["nodeInfo"]["kernelVersion"]
+              kubev=n["status"]["nodeInfo"]["kubeletVersion"]
+              crv=n["status"]["nodeInfo"]["containerRuntimeVersion"]
+              kubepv=n["status"]["nodeInfo"]["kubeProxyVersion"]
+
+              ood=next((c["status"] for c in n["status"]["conditions"] if c["type"] == "OutOfDisk"),"")
+              ood_r=next((c["reason"] for c in n["status"]["conditions"] if c["type"] == "OutOfDisk"),"")
+              ood_m=next((c["message"] for c in n["status"]["conditions"] if c["type"] == "OutOfDisk"),"")
+              mp=next((c["status"] for c in n["status"]["conditions"] if c["type"] == "MemoryPressure"),"")
+              mp_r=next((c["reason"] for c in n["status"]["conditions"] if c["type"] == "MemoryPressure"),"")
+              mp_m=next((c["message"] for c in n["status"]["conditions"] if c["type"] == "MemoryPressure"),"")
+              dp=next((c["status"] for c in n["status"]["conditions"] if c["type"] == "DiskPressure"),"")
+              dp_r=next((c["reason"] for c in n["status"]["conditions"] if c["type"] == "DiskPressure"),"")
+              dp_m=next((c["message"] for c in n["status"]["conditions"] if c["type"] == "DiskPressure"),"")
+              pp=next((c["status"] for c in n["status"]["conditions"] if c["type"] == "PIDPressure"),"")
+              pp_r=next((c["reason"] for c in n["status"]["conditions"] if c["type"] == "PIDPressure"),"")
+              pp_m=next((c["message"] for c in n["status"]["conditions"] if c["type"] == "PIDPressure"),"")
+              r=next((c["status"] for c in n["status"]["conditions"] if c["type"] == "Ready"),"")
+              r_r=next((c["reason"] for c in n["status"]["conditions"] if c["type"] == "Ready"),"")
+              r_m=next((c["message"] for c in n["status"]["conditions"] if c["type"] == "Ready"),"")
+
+              nodeinfo.append({'name':name,'labels':labels,'kerv':kerv,'kubev':kubev,'crv':crv,'kubepv':kubepv,'ood':ood,'ood_r':ood_r,'ood_m':ood_m,'mp':mp,'mp_r':mp_r,'mp_m':mp_m,'dp':dp,'dp_r':dp_r,'dp_m':dp_m,'pp':pp,'pp_r':pp_r,'pp_m':pp_m,'r':r,'r_r':r_r,'r_m':r_m})
+          print json.dumps(nodeinfo)
+      ENDOFSCRIPT
+    warn: False
+  register: node_info
+
+#- debug:
+#    var: node_info
+
+# TODO : n["status"]["conditions"] also has lastTransitionTime, which can be used to calculate the age of the status. Should be very useful.

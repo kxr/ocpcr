@@ -1,0 +1,65 @@
+<h3 style="text-align: center">System Services</h3>
+
+<div class="container">
+    <table class="table table-striped table-hover table-sm table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Node</th>
+                <th scope="col">atomic</th>
+                <th scope="col">docker</th>
+                <th scope="col">dnsmasq</th>
+                <th scope="col">chrony</th>
+                <th scope="col">selinux</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for node in groups['nodes'] %}
+            <tr>
+                <th scope="row">
+                    {% set n = {'name':hostvars[node].ansible_fqdn} %}
+                    {% include 'includes/sub/node_name.j2' %}
+                </th>
+                {% for svc in [ 'atomic-openshift-node.service', 'docker.service', 'dnsmasq.service', 'chronyd.service'] %}
+                    <td>
+                        {% for svcstatus in hostvars[node].node_services_status.results %}
+                            {%- if svcstatus.item == svc -%}
+                                {%- if svcstatus.stdout == 'active' -%}
+                                    <span class="badge badge-pill badge-success">Active</span>
+                                {%- else -%}
+                                    <span class="badge badge-pill badge-danger">Inactive</span>
+                                {%- endif -%}
+                            {%- endif -%}
+                        {% endfor %}
+                        {% for svcenabled in hostvars[node].node_services_enabled.results %}
+                            {%- if svcenabled.item == svc -%}
+                                {%- if svcenabled.stdout == 'enabled' -%}
+                                    <span class="badge badge-pill badge-success">Enabled</span>
+                                {%- else -%}
+                                    <span class="badge badge-pill badge-danger">Disabled</span>
+                                {%- endif -%}
+                            {%- endif -%}
+                        {% endfor %}
+                    </td>
+                {% endfor %}
+                <td>
+                    {% set semode = hostvars[node].ansible_selinux.mode %}
+                    {% set seconf = hostvars[node].ansible_selinux.config_mode %}
+                    {% if semode == 'enforcing' and seconf == 'enforcing' %}
+                        <span class="badge badge-pill badge-success">Enforcing</span>
+                    {% else %}
+                        {% if semode != 'enforcing' %}
+                            <span class="badge badge-pill badge-danger">{{semode}}</span>
+                        {% endif %}
+                        {% if seconf != 'enforcing' %}
+                            <span class="badge badge-pill badge-danger">{{seconf}}</span>
+                        {% endif %}
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<br />
+<hr />
+<br />

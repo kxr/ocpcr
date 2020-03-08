@@ -1,0 +1,54 @@
+<h3 style="text-align: center">ETCD Health</h3>
+<br />
+
+<div class="container">
+    {% set etcd_count = groups['etcd'] | length %}
+    <h5>
+    {% if etcd_count > 1 and etcd_count % 2 == 1 %}
+        <span class="badge badge-success">PASS</span>
+    {% else %}
+        <span class="badge badge-danger">FAIL</span>
+    {% endif %}
+        There are {{etcd_count}} etcd nodes configured
+    </h5>
+    <br />
+
+    {% for node in groups['etcd'] %}
+
+        <div>
+            {% if 'cluster is healthy' in hostvars[node].etcd_cluster_health.stdout and hostvars[node].etcd_cluster_health.rc == 0 %}
+            <div class="alert alert-success" role="alert">
+                <h5 class="alert-heading">{{node}} reported cluster is healthy</h5>
+            {% else %}
+            <div class="alert alert-danger" role="alert">
+                <h5 class="alert-heading">{{node}} reported cluster is not healthy RC={{hostvars[node].etcd_cluster_health.rc}}</h5>
+            {% endif %}
+            </div>
+            <div class="container">
+                {% set edisk = hostvars[node].etcd_data_disk.stdout %}
+                {% set esize = hostvars[node].etcd_disk_size.stdout | float%}
+                {% set eused = hostvars[node].etcd_disk_used.stdout | float%}
+                {% set eused_per = eused/esize*100 %}
+
+                <hr>
+                    Etcd data is on {{edisk}} (Size: {{esize | filesizeformat}} | Used: {{eused | filesizeformat}})
+                    <div class="progress" style="width:20%;float:right">
+                        <div class="progress-bar {% if eused_per > 85 %}bg-danger{%elif eused_per > 75%}bg-warning{% endif %}" role="progressbar" style="width: {{eused_per|int}}%" aria-valuenow="{{eused_per|int}}" aria-valuemin="0" aria-valuemax="100">{{eused_per|int}}%</div>
+                    </div>
+
+                <hr>
+                <b>> cluster-health</b>
+                <pre class="text-monospace">{{hostvars[node].etcd_cluster_health.stdout}}</pre>
+                {% if hostvars[node].etcd_cluster_health.stderr | length %}
+                <pre class="text-monospace">{{hostvars[node].etcd_cluster_health.stderr}}</pre>
+                {% endif %}
+                <b>> member list</b>
+                <pre class="text-monospace">{{hostvars[node].etcd_member_list.stdout}}</pre>
+                <pre class="text-monospace">{{hostvars[node].etcd_member_list.stderr}}</pre>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+<br />
+<hr />
+<br />

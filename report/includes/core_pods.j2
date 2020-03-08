@@ -1,0 +1,40 @@
+<h3 style="text-align: center">Core Pods</h3>
+
+<div class="container">
+    <table class="table table-hover table-sm table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Namespace</th>
+                <th scope="col">Pod Name</th>
+                <th scope="col">Node</th>
+                <th scope="col">Status</th>
+                <th scope="col">Image Version</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in hostvars['localhost'].core_pods.stdout | from_json %}
+                <tr>
+                    <td>
+                        {{p["ns"]}}
+                    </td>
+                    <td>
+                        {{p["name"]}}
+                    </td>
+                    <td>
+                        {{p["node"]}}
+                    </td>
+                    <td>
+                        {%if p["ready"]=="True"%}
+                            <span class="badge badge-pill badge-success">Ready</span>
+                        {%else%}
+                            <span class="badge badge-pill badge-danger">Error</span>
+                        {%endif%}
+                    </td>
+                    <td style="word-wrap: break-word; white-space:pre;">{{p["images"]}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<hr />
+<br />

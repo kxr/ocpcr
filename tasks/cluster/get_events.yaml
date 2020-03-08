@@ -1,0 +1,15 @@
+---
+- name: Get Events
+  shell:
+    cmd: |
+        mkdir -p /root/.tmphc
+        /usr/bin/cp /etc/origin/master/openshift-master.kubeconfig /root/.tmphc/kubeconfig
+        export KUBECONFIG="/root/.tmphc/kubeconfig"
+        oc get events --all-namespaces -o json > /root/.tmphc/all_events
+    warn: False
+
+- name: Copy oc-get-events Output Locally
+  fetch:
+    src: /root/.tmphc/all_events
+    dest: .localtmphc/all_events
+    flat: yes

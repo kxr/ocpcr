@@ -1,0 +1,59 @@
+<h3 style="text-align: center">System Resources</h3>
+
+<div class="container">
+    <table class="table table-hover table-sm table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Node</th>
+                <th scope="col">Arch</th>
+                <th scope="col">vCPU</th>
+                <th scope="col">Load (15 min)</th>
+                <th scope="col">Memory Total / Free</th>
+                <th scope="col">Memory Usage</th>
+                <th scope="col">Swap</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for node in groups['nodes'] %}
+            <tr>
+                <th scope="row">
+                    {% set n = {'name':hostvars[node].ansible_fqdn} %}
+                    {% include 'includes/sub/node_name.j2' %}
+                </th>
+
+                <td>{{ hostvars[node].ansible_architecture }}</td>
+                <td>{{ hostvars[node].ansible_processor_vcpus }}</td>
+                <td>
+                {% set load = hostvars[node].node_load.stdout | float %}
+                {% set vcpu = hostvars[node].ansible_processor_vcpus | int %}
+                {% set load_per = load / vcpu * 100 %}
+                    <div class="progress">
+                        <div class="progress-bar {% if load_per > 85 %}bg-danger{%elif load_per > 65%}bg-warning{% endif %}" role="progressbar" style="width: {{load_per|round|int}}%;" aria-valuenow="{{load_per|round|int}}" aria-valuemin="0" aria-valuemax="100">{{load}}</div>
+                    </div>
+                </td>
+                <td>{{ hostvars[node].ansible_memtotal_mb }} MB / {{ hostvars[node].ansible_memory_mb.nocache.free }} MB</td>
+                {% set mem_used_percent = (hostvars[node].ansible_memtotal_mb - hostvars[node].ansible_memory_mb.nocache.free) / hostvars[node].ansible_memtotal_mb * 100 %}
+                <td>
+                    <div class="progress">
+                      <div class="progress-bar {% if mem_used_percent > 85 %}bg-danger{%elif mem_used_percent > 75%}bg-warning{% endif %}" role="progressbar" style="width: {{mem_used_percent|round|int}}%;" aria-valuenow="{{mem_used_percent|round|int}}" aria-valuemin="0" aria-valuemax="100">{{mem_used_percent|round|int}}%</div>
+                    </div>
+                </td>
+                <td>
+                    {% if hostvars[node].ansible_memory_mb.swap.total == 0 and hostvars[node].ansible_memory_mb.swap.used == 0 and hostvars[node].ansible_memory_mb.swap.cached == 0 %}
+                        <span class="badge badge-pill badge-success">0 Bytes</span>
+                    {% else %}
+                        <span class="badge badge-pill badge-danger">
+                        {{ hostvars[node].ansible_memory_mb.swap.total }} / 
+                        {{ hostvars[node].ansible_memory_mb.swap.used }} / 
+                        {{ hostvars[node].ansible_memory_mb.swap.cached }}
+                        </span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<br />
+<hr />
+<br />
