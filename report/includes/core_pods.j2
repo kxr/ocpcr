@@ -25,9 +25,11 @@
                     </td>
                     <td>
                         {%if p["ready"]=="True"%}
-                            <span class="badge badge-pill badge-success">Ready</span>
+                            <span  data-toggle="tooltip" data-placement="right" title="{{ p['phase']}}" class="badge badge-pill badge-success">Ready</span>
+                        {%elif p["ready"]=="Unknown"%}
+                            <span data-toggle="tooltip" data-placement="right" title="{{p['phase']}} | {{p['reason']}} | {{p['message']}}" class="badge badge-pill badge-danger">Error</span>
                         {%else%}
-                            <span class="badge badge-pill badge-danger">Error</span>
+                            <span data-toggle="tooltip" data-placement="right" title="{{p['phase']}} | {{p['reason']}} | {{p['message']}}" class="badge badge-pill badge-danger">NotReady</span>
                         {%endif%}
                     </td>
                     <td style="word-wrap: break-word; white-space:pre;">{{p["images"]}}</td>

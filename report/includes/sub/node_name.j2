@@ -1,12 +1,12 @@
 {% set nlabels = hostvars['localhost'].node_info.stdout | from_json | json_query("[?name=='"+n['name']+"'].labels") | first %}
 
 {% if 'node-role.kubernetes.io/master:true' in nlabels %}
-    <span class="badge badge-dark">{{ n['name'] }}</span>
+    <span data-toggle="tooltip" data-placement="left" title="Master" class="badge badge-dark">{{ n['name'] }}</span>
 {% elif 'node-role.kubernetes.io/infra:true' in nlabels %}
-    <span class="badge badge-secondary">{{ n['name'] }}</span>
+    <span data-toggle="tooltip" data-placement="left" title="Infra" class="badge badge-secondary">{{ n['name'] }}</span>
 {% elif 'node-role.kubernetes.io/compute:true' in nlabels %}
-    <span class="badge badge-light">{{ n['name'] }}</span>
+    <span data-toggle="tooltip" data-placement="left" title="Worker" class="badge badge-light">{{ n['name'] }}</span>
 {% else %}
-    <span class="badge badge-warning">{{ n['name'] }}</span>
+    <span data-toggle="tooltip" data-placement="left" title="Unknow Role!" class="badge badge-warning">{{ n['name'] }}</span>
 {% endif %}
 

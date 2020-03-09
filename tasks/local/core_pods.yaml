@@ -14,10 +14,23 @@
                   name=p["metadata"]["name"]
                   if p["spec"].has_key("nodeName"):
                       node=p["spec"]["nodeName"]
-                  ready=next((c["status"] for c in p["status"]["conditions"] if c["type"] == "Ready"),"")
+                  else:
+                      node="Unassigned"
+                  ready="Unknown"
+                  if p["status"].has_key("conditions"):
+                    ready=next((c["status"] for c in p["status"]["conditions"] if c["type"] == "Ready"),"")
+                  phase=""
+                  if p["status"].has_key("phase"):
+                    phase=p["status"]["phase"]
+                  message=""
+                  if p["status"].has_key("message"):
+                    message=p["status"]["message"]
+                  reason=""
+                  if p["status"].has_key("reason"):
+                    reason=p["status"]["reason"]
                   images="\n".join([ c["image"].split('/')[-1] for c in p["spec"]["containers"] ])
                   if ready != "True" or p["metadata"]["namespace"] in ['default','kube-system']:
-                    core_pods.append({'name':name,'ns':namespace,'ready':ready,'node':node,'images':images})
+                    core_pods.append({'name':name,'ns':namespace,'ready':ready,'node':node,'images':images,'reason':reason,'message':message,'phase':phase})
           print json.dumps(core_pods)
       ENDOFSCRIPT
     warn: False

@@ -12,7 +12,7 @@
 # Get Cluster Info Using `oc` On First Master
 # Change the index of masters[0] to run on different master
 #
-- hosts: masters[0]
+- hosts: masters[2]
   tasks:
   - import_tasks: tasks/cluster/get_nodes.yaml
   - import_tasks: tasks/cluster/get_pods.yaml
