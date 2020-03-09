@@ -5,10 +5,10 @@ This playbook generates a cluster overview report for an **Open Shift 3** Cluste
 
 # Features
 
-* Requires no additional Dependency
+* Requires no additional dependency
 * Generates a stand-alone HTML file
-* Light-weight and fast (takes less than 3 minutes on a 12 node cluster)
-* Most of the heavy-lifting is done on ansible node
+* Light-weight and fast
+* A total of 3 oc commands are run on the cluster, data is processed on the ansible node.
 * Modular design, new report components can be easily added
 
 If you would like to request a new component/features in the report, please open a new github issue.
@@ -60,3 +60,7 @@ Set the `email_report:` to True and provide the SMTP configuration in cluster-re
 
 
 # Contribution
+
+This is work in progress and I will be adding more components to the report. To understand the architecture of the playbook / jinja templating, please see the wiki section.
+
+Please feel free to write new components and send a pull request.
