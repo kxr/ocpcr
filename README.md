@@ -27,6 +27,11 @@ Change into the directory:
 ```bash
 cd ocpcr
 ```
+If you are not running the playbook directly as root user, make sure the playbook can create tmp directory files:
+```bash
+sudo chown $USER .
+```
+
 And run the cluster-report.yaml playbook
 
 ```
@@ -38,7 +43,7 @@ If the ansible inventory of the cluster is in a non-default location, specify it
 ```bash
 ansible-playbook cluster-report.yaml -i /root/ocp311-inventory
 ```
-Once the playbook finishes, it will generate the report in a HTML file OpenShift_Cluster_Overview_Report_<date>.html
+Once the playbook finishes, it will generate the report in a HTML file OpenShift_Cluster_Overview_Report_\<date>.html
 
 The playbook can email the report to one or more recipents as well.
 Set the `email_report:` to True and provide the SMTP configuration in cluster-report.yaml
