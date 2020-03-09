@@ -3,7 +3,9 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <style>
+            {% include 'includes/bootstrap/bootstrap.min.css' %}
+        </style>
         <title>OpenShift Cluster Overview Report {{report_date}} </title>
         {% include 'includes/styles.j2' %}
     </head>
@@ -21,6 +23,21 @@
         <br />
         {% include 'includes/footer.j2' %}
 
-        {% include 'includes/javascript.j2' %}
+
+        <script>
+            {% include 'includes/bootstrap/jquery-3.3.1.slim.min.js' %}
+        </script>
+
+        <script>
+            {% include 'includes/bootstrap/popper.min.js' %}
+        </script>
+
+        <script>
+            {% include 'includes/bootstrap/bootstrap.min.js' %}
+        </script>
+
+        <script>
+            {% include 'includes/javascript.j2' %}
+        </script>
   </body>
 </html>

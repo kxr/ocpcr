@@ -2,8 +2,9 @@
 - name: ETCD Cluster Health
   shell:
     cmd: |
+        source /etc/profile.d/etcdctl.sh
         source /etc/etcd/etcd.conf
-        etcdctl3 --cert-file=$ETCD_PEER_CERT_FILE --key-file=$ETCD_PEER_KEY_FILE --ca-file=/etc/etcd/ca.crt --endpoints=$ETCD_LISTEN_CLIENT_URLS cluster-health
+        etcdctl2 --cert-file=$ETCD_PEER_CERT_FILE --key-file=$ETCD_PEER_KEY_FILE --ca-file=/etc/etcd/ca.crt --endpoints=$ETCD_LISTEN_CLIENT_URLS cluster-health
     warn: False
   register: etcd_cluster_health
   ignore_errors: yes
@@ -11,8 +12,9 @@
 - name: ETCD Member List
   shell:
     cmd: |
+        source /etc/profile.d/etcdctl.sh
         source /etc/etcd/etcd.conf
-        etcdctl3 --cert-file=$ETCD_PEER_CERT_FILE --key-file=$ETCD_PEER_KEY_FILE --ca-file=/etc/etcd/ca.crt --endpoints=$ETCD_LISTEN_CLIENT_URLS member list
+        etcdctl2 --cert-file=$ETCD_PEER_CERT_FILE --key-file=$ETCD_PEER_KEY_FILE --ca-file=/etc/etcd/ca.crt --endpoints=$ETCD_LISTEN_CLIENT_URLS member list
     warn: False
   register: etcd_member_list
   ignore_errors: yes
