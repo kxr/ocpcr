@@ -48,5 +48,7 @@ Set the `email_report:` to True and provide the SMTP configuration in cluster-re
 ```
 
 # Sample
+![OpenShift Cluster Overview Report 2020-03-09](https://user-images.githubusercontent.com/10104541/76195331-812e3580-6201-11ea-8265-b257c1f977ec.png)
+
 
 # Contribution
