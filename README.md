@@ -1,7 +1,8 @@
 # Open Shift Cluster Report
----
 
 This playbook generates a cluster overview report for an **Open Shift 3** Cluster.
+
+---
 
 # Features
 
@@ -58,6 +59,12 @@ Set the `email_report:` to True and provide the SMTP configuration in cluster-re
 # Sample
 ![OpenShift Cluster Overview Report 2020-03-09](https://user-images.githubusercontent.com/10104541/76197494-ae7ce280-6205-11ea-8b26-cc1c8d0676c0.png)
 
+# TODO
+
+* Check for orphaned pods
+* Compare the master-config.yaml
+* Elasticsearch status
+* Warning events in the core namespaces
 
 
 # Contribution
