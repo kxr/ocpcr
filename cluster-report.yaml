@@ -53,7 +53,7 @@
   connection: local
   vars:
     email_report: False
-    email_from: khizernaeem@gmail.com (OpenShift Health Check)
+    email_from: khizernaeem@gmail.com (OpenShift Cluster Overview)
     email_recipients:
       - khizernaeem@gmail.com
       - knaeem@redhat.com

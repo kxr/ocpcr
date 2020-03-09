@@ -4,11 +4,11 @@
     port: "{{smtp_port}}"
     username: "{{smtp_user}}"
     password: "{{smtp_pass}}"
-    subject: "OpenShift 3 Health Check Report {{ '%Y-%m-%d' | strftime }}"
+    subject: "OpenShift Cluster Overview Report {{ '%Y-%m-%d' | strftime }}"
     body: Please Open the attached HTML report in a modern web browser that is connected to the internet.
     from: "{{email_from}}"
     to: "{{email_recipients}}"
     attach:
-    - "Health_Check_Report_{{ hostvars['localhost'].report_date }}.html"
+    - "OpenShift_Cluster_Overview_Report_{{ hostvars['localhost'].report_date }}.html"
   delegate_to: localhost
   when: email_report

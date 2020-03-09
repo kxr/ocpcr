@@ -35,8 +35,8 @@ The playbook can email the report to one or more recipents as well.
 Set the `email_report:` to True and provide the SMTP configuration in cluster-report.yaml
 
 ```yaml
-    email_report: False
-    email_from: khizernaeem@gmail.com (OpenShift Health Check)
+    email_report: True
+    email_from: khizernaeem@gmail.com (OpenShift Cluster Overview)
     email_recipients:
       - khizernaeem@gmail.com
       - knaeem@redhat.com
