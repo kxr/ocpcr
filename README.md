@@ -5,6 +5,11 @@ This playbook generates a cluster overview report for an **Open Shift 3** Cluste
 
 # Features
 
+* Stand-alone and requires no additional Dependency
+* Extremely light-weight
+* Most of the heavy-lifting is done on ansible node
+* Modular design, new report components can be easily added
+
 # Usage
 
 Simply Clone this repository on the ansible node of the cluster:
