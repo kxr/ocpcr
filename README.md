@@ -29,6 +29,23 @@ If the ansible inventory of the cluster is in a non-default location, specify it
 ```bash
 ansible-playbook cluster-report.yaml -i /root/ocp311-inventory
 ```
+Once the playbook finishes, it will generate the report in a HTML file OpenShift_Cluster_Overview_Report_<date>.html
+
+The playbook can email the report to one or more recipents as well.
+Set the `email_report:` to True and provide the SMTP configuration in cluster-report.yaml
+
+```yaml
+    email_report: False
+    email_from: khizernaeem@gmail.com (OpenShift Health Check)
+    email_recipients:
+      - khizernaeem@gmail.com
+      - knaeem@redhat.com
+    smtp_host: smtp.gmail.com
+    smtp_port: 587
+    smtp_user: khizernaeem@gmail.com
+    smtp_pass: xxxxxx
+
+```
 
 # Sample
 
