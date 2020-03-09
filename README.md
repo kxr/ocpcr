@@ -5,14 +5,17 @@ This playbook generates a cluster overview report for an **Open Shift 3** Cluste
 
 # Features
 
-* Stand-alone and requires no additional Dependency
-* Extremely light-weight
+* Requires no additional Dependency
+* Generates a stand-alone HTML file
+* Light-weight and fast (takes less than 3 minutes on a 12 node cluster)
 * Most of the heavy-lifting is done on ansible node
 * Modular design, new report components can be easily added
 
+If you would like to request a new component/features in the report, please open a new github issue.
+
 # Usage
 
-Simply Clone this repository on the ansible node of the cluster:
+Clone/copy this repository on the ansible node of the cluster:
 
 ```bash
 git clone https://github.com/kxr/ocpcr.git
