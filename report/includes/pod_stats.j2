@@ -8,6 +8,7 @@
                 <th scope="col" rowspan="2">Capacity</th>
                 <th scope="col" rowspan="2" data-toggle="tooltip" data-placement="right" title="Total Pods Running On Node">Total</th>
                 <th scope="col" colspan="4" class="text-center">Pod Conditions</th>
+                <th scope="col" rowspan="2">Unknown</th>
             <tr>
                 <th scope="col" data-toggle="tooltip" data-placement="right" title="Pods With Ready Condition">Ready?</th>
                 <th scope="col" data-toggle="tooltip" data-placement="right" title="Pods With ContainersReady Condition">cReady?</th>
@@ -56,6 +57,11 @@
                     <span class="badge badge-pill badge-success">{{n['ni']}} No</span>
                     {% endif %}
                 </td>
+                <td>
+                    {%if n['u'] > 0%}
+                    <span class="badge badge-pill badge-danger">{{n['u']}}</span>
+                    {%endif%}
+                </td>
             </tr>
             {% endfor %}
 
@@ -65,6 +71,8 @@
                 <td></td>
                 {%if ua['t'] > 0%}
                 <td class="table-danger">{{ua['t']}}</td>
+                {%else%}
+                <td></td>
                 {%endif%}
                 <td>
                     {%if ua['r'] > 0 %}
@@ -97,6 +105,11 @@
                     {%if ua['pns'] > 0 %}
                     <span class="badge badge-pill badge-danger">{{ua['ni']}}</span>
                     {% endif %}
+                </td>
+                <td>
+                    {%if ua['u'] > 0%}
+                    <span class="badge badge-pill badge-danger">{{ua['u']}}</span>
+                    {%endif%}
                 </td>
             </tr>
         </tbody>

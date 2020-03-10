@@ -2,57 +2,60 @@
 - name: Get Pod Stats
   shell:
     cmd: |
-      /usr/bin/env python2 <<ENDOFSCRIPT
-      import sys,json
-      pod_stats={}
-      pod_stats["Unassigned"]={"cap":0,"t":0,"r":0,"nr":0,"i":0,"ni":0,"cr":0,"cnr":0,"ps":0,"pns":0}
-      nodes=[]
-      with open(".localtmphc/all_nodes") as nodes_json:
-          nodes=json.load(nodes_json)["items"]
-      pods=[]
-      with open(".localtmphc/all_pods") as pods_json:
-          pods=json.load(pods_json)["items"]
-      for n in nodes:
-          nname=n["metadata"]["name"]
-          all_pod=int(n["status"]["allocatable"]["pods"])
-          pod_stats[nname]={"cap":all_pod,"t":0,"r":0,"nr":0,"i":0,"ni":0,"cr":0,"cnr":0,"ps":0,"pns":0}
-          for p in pods:
-              if p["spec"].has_key("nodeName") and p["spec"]["nodeName"]==nname:
-                  x=nname
-              elif not p["spec"].has_key("nodeName"):
-                  x='Unassigned'
-              else:
-                  continue
-              pod_stats[x]["t"]+=1
-              for cond in p["status"]["conditions"]:
-                  if cond["type"] == "Ready":
-                      if cond["status"] == "True":
-                          pod_stats[x]["r"]+=1
-                      else:
-                          pod_stats[x]["nr"]+=1
-                  elif cond["type"] == "Initialized":
-                      if cond["status"] == "True":
-                          pod_stats[x]["i"]+=1
-                      else:
-                          pod_stats[x]["ni"]+=1
-                  elif cond["type"] == "ContainersReady":
-                      if cond["status"] == "True":
-                          pod_stats[x]["cr"]+=1
-                      else:
-                          pod_stats[x]["cnr"]+=1
-                  elif cond["type"] == "PodScheduled":
-                      if cond["status"] == "True":
-                          pod_stats[x]["ps"]+=1
-                      else:
-                          pod_stats[x]["pns"]+=1
-                  else:
-                      print "This should never happen"
-      pod_stats_list=[]
-      for n,r in pod_stats.items():
-          r["name"]=n
-          pod_stats_list.append(r)
-      print json.dumps(pod_stats_list)
-      ENDOFSCRIPT
+        /usr/bin/env python2 <<ENDOFSCRIPT
+        import sys,json
+        pod_stats={}
+        pod_stats["Unassigned"]={"cap":0,"t":0,"r":0,"nr":0,"i":0,"ni":0,"cr":0,"cnr":0,"ps":0,"pns":0,"u":0}
+        nodes=[]
+        with open(".localtmphc/all_nodes") as nodes_json:
+            nodes=json.load(nodes_json)["items"]
+        pods=[]
+        with open(".localtmphc/all_pods") as pods_json:
+            pods=json.load(pods_json)["items"]
+        for n in nodes:
+            nname=n["metadata"]["name"]
+            all_pod=int(n["status"]["allocatable"]["pods"])
+            pod_stats[nname]={"cap":all_pod,"t":0,"r":0,"nr":0,"i":0,"ni":0,"cr":0,"cnr":0,"ps":0,"pns":0,"u":0}
+            for p in pods:
+                if p["spec"].has_key("nodeName") and p["spec"]["nodeName"]==nname:
+                    x=nname
+                elif not p["spec"].has_key("nodeName"):
+                    x='Unassigned'
+                else:
+                    continue
+                pod_stats[x]["t"]+=1
+                if p["status"].has_key("conditions") and len(p["status"]["conditions"])>0:
+                    for cond in p["status"]["conditions"]:
+                        if cond["type"] == "Ready":
+                            if cond["status"] == "True":
+                                pod_stats[x]["r"]+=1
+                            else:
+                                pod_stats[x]["nr"]+=1
+                        elif cond["type"] == "Initialized":
+                            if cond["status"] == "True":
+                                pod_stats[x]["i"]+=1
+                            else:
+                                pod_stats[x]["ni"]+=1
+                        elif cond["type"] == "ContainersReady":
+                            if cond["status"] == "True":
+                                pod_stats[x]["cr"]+=1
+                            else:
+                                pod_stats[x]["cnr"]+=1
+                        elif cond["type"] == "PodScheduled":
+                            if cond["status"] == "True":
+                                pod_stats[x]["ps"]+=1
+                            else:
+                                pod_stats[x]["pns"]+=1
+                        else:
+                            print "This should never happen"
+                else:
+                    pod_stats[x]["u"]+=1
+        pod_stats_list=[]
+        for n,r in pod_stats.items():
+            r["name"]=n
+            pod_stats_list.append(r)
+        print json.dumps(pod_stats_list)
+        ENDOFSCRIPT
     warn: False
   register: pod_stats
 
