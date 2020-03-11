@@ -3,9 +3,9 @@
 {% if 'master' in on['roles'] %}
     <span data-toggle="tooltip" data-placement="left" title="{{roles}}" class="badge badge-dark">{{ on['sname'] }}</span>
 {% elif 'infra' in on['roles'] %}
-    <span data-toggle="tooltip" data-placement="left" title="{{roles}}" class="badge badge-secondary">{{ on['sname'] }}</span>
-{% elif 'gluster' in on['roles'] %}
     <span data-toggle="tooltip" data-placement="left" title="{{roles}}" class="badge badge-info">{{ on['sname'] }}</span>
+{% elif 'gluster' in on['roles'] %}
+    <span data-toggle="tooltip" data-placement="left" title="{{roles}}" class="badge badge-secondary">{{ on['sname'] }}</span>
 {% elif 'worker' in on['roles'] %}
     <span data-toggle="tooltip" data-placement="left" title="{{roles}}" class="badge badge-light">{{ on['sname'] }}</span>
 {% else %}
