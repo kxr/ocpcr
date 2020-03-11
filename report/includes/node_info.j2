@@ -15,35 +15,23 @@
         </thead>
         <tbody>
             {% for on in hostvars['localhost'].ordered_nodes.stdout | from_json %}
-                {% set n = hostvars['localhost'].node_info.stdout | from_json | json_query("[?name=='"+on+"']") | first %}
+                {% set n = hostvars['localhost'].node_info.stdout | from_json | json_query("[?name=='"+on['name']+"']") | first %}
                 <tr>
                     <th scope="row">
                         {% include 'includes/sub/node_name.j2' %}
                     </th>
                     <td>
-                        {% if 'ansible_distribution_version' in hostvars[n['name']] %}
-                            {{ hostvars[n['name']].ansible_distribution_version }}
+                        {% if on['inv_hname'] != "" and 'ansible_distribution_version' in hostvars[on['inv_hname']] %}
+                            {{ hostvars[on['inv_hname']].ansible_distribution_version }}
                         {% else %}
-                            <!-- search hostvars based on ansible_fqdn for cases where inventory hostname != node name -->
-                            {% set xname = hostvars | to_json | from_json | dict2items | json_query("[?value.ansible_fqdn=='"+n['name']+"'].key") | first %}
-                            {% if xname | length  %}
-                                {{ hostvars[xname].ansible_distribution_version }}
-                            {%else%}
-                                <span class="badge badge-pill badge-danger">!</span>
-                            {%endif%}
+                            <span class="badge badge-pill badge-danger">!</span>
                         {% endif %}
                     </td>
                     <td>
-                        {% if 'node_atomic_rpm' in hostvars[n['name']] %}
-                            {{hostvars[n['name']].node_atomic_rpm.stdout }}
+                        {% if on['inv_hname'] != "" and 'node_atomic_rpm' in hostvars[on['inv_hname']] %}
+                            {{ hostvars[on['inv_hname']].node_atomic_rpm.stdout }}
                         {% else %}
-                            <!-- search hostvars based on ansible_fqdn for cases where inventory hostname != node name -->
-                            {% set xname = hostvars | to_json | from_json | dict2items | json_query("[?value.ansible_fqdn=='"+n['name']+"'].key") | first %}
-                            {% if xname | length  %}
-                                {{ hostvars[xname].node_atomic_rpm.stdout }}
-                            {%else%}
-                                <span class="badge badge-pill badge-danger">!</span>
-                            {%endif%}
+                            <span class="badge badge-pill badge-danger">!</span>
                         {% endif %}
                     </td>
                     <td>
@@ -59,16 +47,10 @@
                         {{n["crv"]}}
                     </td>
                     <td>
-                        {% if 'ansible_bios_version' in hostvars[n['name']] %}
-                            {{hostvars[n['name']].ansible_bios_version }}
+                        {% if on['inv_hname'] != "" and 'ansible_bios_version' in hostvars[on['inv_hname']] %}
+                            {{ hostvars[on['inv_hname']].ansible_bios_version }}
                         {% else %}
-                            <!-- search hostvars based on ansible_fqdn for cases where inventory hostname != node name -->
-                            {% set xname = hostvars | to_json | from_json | dict2items | json_query("[?value.ansible_fqdn=='"+n['name']+"'].key") | first %}
-                            {% if xname | length  %}
-                                {{ hostvars[xname].ansible_bios_version }}
-                            {%else%}
-                                <span class="badge badge-pill badge-danger">!</span>
-                            {%endif%}
+                            <span class="badge badge-pill badge-danger">!</span>
                         {% endif %}
                     </td>
                 </tr>

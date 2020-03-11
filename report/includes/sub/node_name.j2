@@ -1,12 +1,14 @@
-{% set nlabels = hostvars['localhost'].node_info.stdout | from_json | json_query("[?name=='"+n['name']+"'].labels") | first %}
+{% set roles = on['roles'] | join(', ') %}
 
-{% if 'node-role.kubernetes.io/master:true' in nlabels %}
-    <span data-toggle="tooltip" data-placement="left" title="Master" class="badge badge-dark">{{ n['name'] }}</span>
-{% elif 'node-role.kubernetes.io/infra:true' in nlabels %}
-    <span data-toggle="tooltip" data-placement="left" title="Infra" class="badge badge-secondary">{{ n['name'] }}</span>
-{% elif 'node-role.kubernetes.io/compute:true' in nlabels %}
-    <span data-toggle="tooltip" data-placement="left" title="Worker" class="badge badge-light">{{ n['name'] }}</span>
+{% if 'master' in on['roles'] %}
+    <span data-toggle="tooltip" data-placement="left" title="{{roles}}" class="badge badge-dark">{{ on['sname'] }}</span>
+{% elif 'infra' in on['roles'] %}
+    <span data-toggle="tooltip" data-placement="left" title="{{roles}}" class="badge badge-secondary">{{ on['sname'] }}</span>
+{% elif 'gluster' in on['roles'] %}
+    <span data-toggle="tooltip" data-placement="left" title="{{roles}}" class="badge badge-info">{{ on['sname'] }}</span>
+{% elif 'worker' in on['roles'] %}
+    <span data-toggle="tooltip" data-placement="left" title="{{roles}}" class="badge badge-light">{{ on['sname'] }}</span>
 {% else %}
-    <span data-toggle="tooltip" data-placement="left" title="Unknow Role!" class="badge badge-warning">{{ n['name'] }}</span>
+    <span data-toggle="tooltip" data-placement="left" title="Unknown Role" class="badge badge-warning">{{ on['sname'] }}</span>
 {% endif %}
 

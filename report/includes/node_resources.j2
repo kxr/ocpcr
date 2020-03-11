@@ -20,7 +20,7 @@
         <tbody>
 
             {% for on in hostvars['localhost'].ordered_nodes.stdout | from_json %}
-                {% set n = hostvars['localhost'].node_resources.stdout | from_json | json_query("[?name=='"+on+"']") | first %}
+                {% set n = hostvars['localhost'].node_resources.stdout | from_json | json_query("[?name=='"+on['name']+"']") | first %}
 
                 {% set cpu_req_per = n['cpu_req'] / n['all_cpu'] * 100 if n['all_cpu'] > 0 else 0 %}
                 {% set cpu_lim_per = n['cpu_lim'] / n['all_cpu'] * 100 if n['all_cpu'] > 0 else 0 %}

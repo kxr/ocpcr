@@ -14,41 +14,76 @@
             </tr>
         </thead>
         <tbody>
-            {% for node in groups['nodes'] %}
+            {# for node in groups['nodes'] #}
+            {% for on in hostvars['localhost'].ordered_nodes.stdout | from_json %}
+                {% set n = hostvars['localhost'].node_info.stdout | from_json | json_query("[?name=='"+on['name']+"']") | first %}
             <tr>
                 <th scope="row">
-                    {% set n = {'name':hostvars[node].ansible_fqdn} %}
                     {% include 'includes/sub/node_name.j2' %}
                 </th>
 
-                <td>{{ hostvars[node].ansible_architecture }}</td>
-                <td>{{ hostvars[node].ansible_processor_vcpus }}</td>
                 <td>
-                {% set load = hostvars[node].node_load.stdout | float %}
-                {% set vcpu = hostvars[node].ansible_processor_vcpus | int %}
-                {% set load_per = load / vcpu * 100 %}
-                    <div class="progress">
-                        <div class="progress-bar {% if load_per > 85 %}bg-danger{%elif load_per > 65%}bg-warning{% endif %}" role="progressbar" style="width: {{load_per|round|int}}%;" aria-valuenow="{{load_per|round|int}}" aria-valuemin="0" aria-valuemax="100">{{load}}</div>
-                    </div>
+                    {% if on['inv_hname'] != "" and 'ansible_architecture' in hostvars[on['inv_hname']] %}
+                        {{ hostvars[on['inv_hname']].ansible_architecture }}
+                    {% else %}
+                        <span class="badge badge-pill badge-danger">!</span>
+                    {% endif %}
                 </td>
-                <td>{{ hostvars[node].ansible_memtotal_mb }} MB / {{ hostvars[node].ansible_memory_mb.nocache.free }} MB</td>
-                {% set mem_used_percent = (hostvars[node].ansible_memtotal_mb - hostvars[node].ansible_memory_mb.nocache.free) / hostvars[node].ansible_memtotal_mb * 100 %}
+                <td>
+                    {% if on['inv_hname'] != "" and 'ansible_processor_vcpus' in hostvars[on['inv_hname']] %}
+                        {{ hostvars[on['inv_hname']].ansible_processor_vcpus }}
+                    {% else %}
+                        <span class="badge badge-pill badge-danger">!</span>
+                    {% endif %}
+                </td>
+
+                <td>
+                {% if on['inv_hname'] != "" and 'node_load' in hostvars[on['inv_hname']] and 'ansible_processor_vcpus' in hostvars[on['inv_hname']] %}
+                    {% set load = hostvars[on['inv_hname']].node_load.stdout | float %}
+                    {% set vcpu = hostvars[on['inv_hname']].ansible_processor_vcpus | int %}
+                    {% set load_per = load / vcpu * 100 %}
+                        <div class="progress">
+                            <div class="progress-bar {% if load_per > 85 %}bg-danger{%elif load_per > 65%}bg-warning{% endif %}" role="progressbar" style="width: {{load_per|round|int}}%;" aria-valuenow="{{load_per|round|int}}" aria-valuemin="0" aria-valuemax="100">{{load}}</div>
+                        </div>
+                {% else %}
+                    <span class="badge badge-pill badge-danger">!</span>
+                {% endif %}
+                </td>
+
+                {% if on['inv_hname'] != "" and 'ansible_memtotal_mb' in hostvars[on['inv_hname']] and 'ansible_memory_mb' in hostvars[on['inv_hname']] %}
+                <td>
+                        {{ hostvars[on['inv_hname']].ansible_memtotal_mb }} MB / {{ hostvars[on['inv_hname']].ansible_memory_mb.nocache.free }} MB
+                </td>
+
+                {% set mem_used_percent = (hostvars[on['inv_hname']].ansible_memtotal_mb - hostvars[on['inv_hname']].ansible_memory_mb.nocache.free) / hostvars[on['inv_hname']].ansible_memtotal_mb * 100 %}
                 <td>
                     <div class="progress">
                       <div class="progress-bar {% if mem_used_percent > 85 %}bg-danger{%elif mem_used_percent > 75%}bg-warning{% endif %}" role="progressbar" style="width: {{mem_used_percent|round|int}}%;" aria-valuenow="{{mem_used_percent|round|int}}" aria-valuemin="0" aria-valuemax="100">{{mem_used_percent|round|int}}%</div>
                     </div>
                 </td>
+
                 <td>
-                    {% if hostvars[node].ansible_memory_mb.swap.total == 0 and hostvars[node].ansible_memory_mb.swap.used == 0 and hostvars[node].ansible_memory_mb.swap.cached == 0 %}
+                    {% if hostvars[on['inv_hname']].ansible_memory_mb.swap.total == 0 and hostvars[on['inv_hname']].ansible_memory_mb.swap.used == 0 and hostvars[on['inv_hname']].ansible_memory_mb.swap.cached == 0 %}
                         <span class="badge badge-pill badge-success">0 Bytes</span>
                     {% else %}
                         <span class="badge badge-pill badge-danger">
-                        {{ hostvars[node].ansible_memory_mb.swap.total }} / 
-                        {{ hostvars[node].ansible_memory_mb.swap.used }} / 
-                        {{ hostvars[node].ansible_memory_mb.swap.cached }}
+                        {{ hostvars[on['inv_hname']].ansible_memory_mb.swap.total }} / 
+                        {{ hostvars[on['inv_hname']].ansible_memory_mb.swap.used }} / 
+                        {{ hostvars[on['inv_hname']].ansible_memory_mb.swap.cached }}
                         </span>
                     {% endif %}
                 </td>
+                {% else %}
+                    <td>
+                        <span class="badge badge-pill badge-danger">!</span>
+                    </td>
+                    <td>
+                        <span class="badge badge-pill badge-danger">!</span>
+                    </td>
+                    <td>
+                        <span class="badge badge-pill badge-danger">!</span>
+                    </td>
+                {% endif %}
             </tr>
             {% endfor %}
         </tbody>

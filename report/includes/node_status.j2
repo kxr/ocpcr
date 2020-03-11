@@ -14,7 +14,7 @@
         </thead>
         <tbody>
             {% for on in hostvars['localhost'].ordered_nodes.stdout | from_json %}
-                {% set n = hostvars['localhost'].node_info.stdout | from_json | json_query("[?name=='"+on+"']") | first %}
+                {% set n = hostvars['localhost'].node_info.stdout | from_json | json_query("[?name=='"+on['name']+"']") | first %}
                 {%set err='<span class="badge badge-pill badge-danger">!</span>'%}
                 <tr>
                     <th scope="row">

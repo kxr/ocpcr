@@ -18,7 +18,7 @@
         </thead>
         <tbody>
             {% for on in hostvars['localhost'].ordered_nodes.stdout | from_json %}
-                {% set n = hostvars['localhost'].pod_stats.stdout | from_json | json_query("[?name=='"+on+"']") | first %}
+                {% set n = hostvars['localhost'].pod_stats.stdout | from_json | json_query("[?name=='"+on['name']+"']") | first %}
             <tr>
                 <th scope="row">{% include 'includes/sub/node_name.j2' %}</th>
 

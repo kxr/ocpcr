@@ -13,15 +13,17 @@
             </tr>
         </thead>
         <tbody>
-            {% for node in groups['nodes'] %}
+            {# for node in groups['nodes'] #}
+            {% for on in hostvars['localhost'].ordered_nodes.stdout | from_json %}
+                {% set n = hostvars['localhost'].node_info.stdout | from_json | json_query("[?name=='"+on['name']+"']") | first %}
             <tr>
                 <th scope="row">
-                    {% set n = {'name':hostvars[node].ansible_fqdn} %}
                     {% include 'includes/sub/node_name.j2' %}
                 </th>
                 {% for svc in [ 'atomic-openshift-node.service', 'docker.service', 'dnsmasq.service', 'chronyd.service'] %}
                     <td>
-                        {% for svcstatus in hostvars[node].node_services_status.results %}
+                        {% if on['inv_hname'] != "" and 'node_services_status' in hostvars[on['inv_hname']] and 'node_services_enabled' in hostvars[on['inv_hname']] %}
+                        {% for svcstatus in hostvars[on['inv_hname']].node_services_status.results %}
                             {%- if svcstatus.item == svc -%}
                                 {%- if svcstatus.stdout == 'active' -%}
                                     <span class="badge badge-pill badge-success">Active</span>
@@ -30,7 +32,7 @@
                                 {%- endif -%}
                             {%- endif -%}
                         {% endfor %}
-                        {% for svcenabled in hostvars[node].node_services_enabled.results %}
+                        {% for svcenabled in hostvars[on['inv_hname']].node_services_enabled.results %}
                             {%- if svcenabled.item == svc -%}
                                 {%- if svcenabled.stdout == 'enabled' -%}
                                     <span class="badge badge-pill badge-success">Enabled</span>
@@ -39,20 +41,27 @@
                                 {%- endif -%}
                             {%- endif -%}
                         {% endfor %}
+                        {% else %}
+                            <span class="badge badge-pill badge-danger">!</span>
+                        {% endif %}
                     </td>
                 {% endfor %}
                 <td>
-                    {% set semode = hostvars[node].ansible_selinux.mode %}
-                    {% set seconf = hostvars[node].ansible_selinux.config_mode %}
-                    {% if semode == 'enforcing' and seconf == 'enforcing' %}
-                        <span class="badge badge-pill badge-success">Enforcing</span>
+                    {% if on['inv_hname'] != "" and 'ansible_selinux' in hostvars[on['inv_hname']] %}
+                        {% set semode = hostvars[on['inv_hname']].ansible_selinux.mode %}
+                        {% set seconf = hostvars[on['inv_hname']].ansible_selinux.config_mode %}
+                        {% if semode == 'enforcing' and seconf == 'enforcing' %}
+                            <span class="badge badge-pill badge-success">Enforcing</span>
+                        {% else %}
+                            {% if semode != 'enforcing' %}
+                                <span class="badge badge-pill badge-danger">{{semode}}</span>
+                            {% endif %}
+                            {% if seconf != 'enforcing' %}
+                                <span class="badge badge-pill badge-danger">{{seconf}}</span>
+                            {% endif %}
+                        {% endif %}
                     {% else %}
-                        {% if semode != 'enforcing' %}
-                            <span class="badge badge-pill badge-danger">{{semode}}</span>
-                        {% endif %}
-                        {% if seconf != 'enforcing' %}
-                            <span class="badge badge-pill badge-danger">{{seconf}}</span>
-                        {% endif %}
+                        <span class="badge badge-pill badge-danger">!</span>
                     {% endif %}
                 </td>
             </tr>

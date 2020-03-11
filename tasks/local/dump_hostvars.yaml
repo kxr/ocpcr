@@ -1,0 +1,4 @@
+- name: Dump hostvars to JSON
+  template:
+    src: hostvars.j2
+    dest: ".localtmphc/hostvars.json"
