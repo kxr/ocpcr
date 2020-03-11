@@ -35,7 +35,7 @@
                 </td>
                 <td>
                     <span class="badge badge-pill badge-success">{{n['cr']}} Yes</span>
-                    {%if n['cnr'] > 0 %}
+                    {% if n['cnr'] > 0 %}
                     <span class="badge badge-pill badge-danger">{{n['cnr']}} No</span>
                     {%else%}
                     <span class="badge badge-pill badge-success">{{n['cnr']}} No</span>
@@ -43,18 +43,18 @@
                 </td>
                 <td>
                     <span class="badge badge-pill badge-success">{{n['i']}} Yes</span>
-                    {%if n['ni'] > 0 %}
+                    {% if n['ni'] > 0 %}
                     <span class="badge badge-pill badge-danger">{{n['ni']}} No</span>
                     {%else%}
                     <span class="badge badge-pill badge-success">{{n['ni']}} No</span>
                     {% endif %}
                 </td>
                 <td>
-                    <span class="badge badge-pill badge-success">{{n['i']}} Yes</span>
+                    <span class="badge badge-pill badge-success">{{n['ps']}} Yes</span>
                     {%if n['pns'] > 0 %}
-                    <span class="badge badge-pill badge-danger">{{n['ni']}} No</span>
+                    <span class="badge badge-pill badge-danger">{{n['pns']}} No</span>
                     {%else%}
-                    <span class="badge badge-pill badge-success">{{n['ni']}} No</span>
+                    <span class="badge badge-pill badge-success">{{n['pns']}} No</span>
                     {% endif %}
                 </td>
                 <td>
