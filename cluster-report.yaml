@@ -54,13 +54,13 @@
   connection: local
   vars:
     email_report: False
-    email_from: khizernaeem@gmail.com (OpenShift Cluster Overview)
+    email_from: cluster-report@email.com (OpenShift Cluster Overview)
     email_recipients:
-      - khizernaeem@gmail.com
-      - knaeem@redhat.com
+      - khizer@email.com
+      - someone@email.com
     smtp_host: smtp.gmail.com
     smtp_port: 587
-    smtp_user: khizernaeem@gmail.com
+    smtp_user: smtp_auth_user@email.com
     smtp_pass: xxxxxx
   tasks:
   - import_tasks: report/email_report.yaml
