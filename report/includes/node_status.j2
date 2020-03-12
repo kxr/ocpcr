@@ -33,9 +33,14 @@
                     <td data-toggle="tooltip" data-placement="right" title="{{n['dp_m']}}" class="{%if n['dp']=='False'%}table-success{%else%}table-danger{%endif%}">
                         {{n['dp_r']|default(err)}}
                     </td>
-                    <td data-toggle="tooltip" data-placement="right" title="{{n['pp_m']}}" class="{%if n['pp']=='False'%}table-success{%else%}table-danger{%endif%}">
-                        {{n['pp_r']|default(err)}}
-                    </td>
+                    {# For OCP < 3.11 PID Pressure Condition do not exist. So if its empty, we will skip it #}
+                    {% if n['pp_m']=="" and n['pp']== "" and n['pp_r']=="" %}
+                        <td></td>
+                    {%else%}
+                        <td data-toggle="tooltip" data-placement="right" title="{{n['pp_m']}}" class="{%if n['pp']=='False'%}table-success{%else%}table-danger{%endif%}">
+                            {{n['pp_r']|default(err)}}
+                        </td>
+                    {%endif%}
 
                 </tr>
             {% endfor%}

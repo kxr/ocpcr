@@ -9,6 +9,6 @@
 {% elif 'worker' in on['roles'] %}
     <span data-toggle="tooltip" data-placement="left" title="{{roles}}" class="badge badge-light">{{ on['sname'] }}</span>
 {% else %}
-    <span data-toggle="tooltip" data-placement="left" title="Unknown Role" class="badge badge-warning">{{ on['sname'] }}</span>
+    <span class="badge badge-light">{{ on['sname'] }}</span>
 {% endif %}
 
