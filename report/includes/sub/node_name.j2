@@ -1,5 +1,6 @@
 {% set roles = on['roles'] | join(', ') %}
 
+<h5>
 {% if 'master' in on['roles'] %}
     <span data-toggle="tooltip" data-placement="left" title="{{roles}}" class="badge badge-dark">{{ on['sname'] }}</span>
 {% elif 'infra' in on['roles'] %}
@@ -12,3 +13,4 @@
     <span class="badge badge-light">{{ on['sname'] }}</span>
 {% endif %}
 
+</h5>
