@@ -52,7 +52,7 @@ Set the `email_report:` to True and provide the SMTP configuration in cluster-re
       - someone@email.com
     smtp_host: smtp.gmail.com
     smtp_port: 587
-    smtp_user: khizernaeem@gmail.com
+    smtp_user: smtp_auth_user@email.com
     smtp_pass: xxxxxx
 
 ```
