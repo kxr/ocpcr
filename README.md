@@ -27,10 +27,6 @@ Change into the directory:
 ```bash
 cd ocpcr
 ```
-If you are not running the playbook directly as root user, make sure the playbook can create tmp directory files:
-```bash
-sudo chown $USER .
-```
 
 And run the cluster-report.yaml playbook
 
@@ -50,10 +46,10 @@ Set the `email_report:` to True and provide the SMTP configuration in cluster-re
 
 ```yaml
     email_report: True
-    email_from: khizernaeem@gmail.com (OpenShift Cluster Overview)
+    email_from: cluster-report@email.com (OpenShift Cluster Overview)
     email_recipients:
-      - khizernaeem@gmail.com
-      - knaeem@redhat.com
+      - khizer@email.com
+      - someone@email.com
     smtp_host: smtp.gmail.com
     smtp_port: 587
     smtp_user: khizernaeem@gmail.com
