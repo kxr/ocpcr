@@ -83,6 +83,7 @@ Set the `email_report:` to True and provide the SMTP configuration in cluster-re
 * Imagestream check (deployments using old istreams)
 * OVS flow, bridges, interfaces check
 * Create proper document/wiki
+* Use bootstrap's datatables to allow for interactive table filtering.
 
 
 
