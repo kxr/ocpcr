@@ -2,7 +2,7 @@
 - name: OpenShift Node Service Status
   shell: systemctl is-active {{ item }}
   register: node_services_status
-  loop:
+  with_items:
     - atomic-openshift-node.service
     - dnsmasq.service
     - docker.service
@@ -12,7 +12,7 @@
 - name: OpenShift Node Service Enabled
   shell: systemctl is-enabled {{ item }}
   register: node_services_enabled
-  loop:
+  with_items:
     - atomic-openshift-node.service
     - dnsmasq.service
     - docker.service

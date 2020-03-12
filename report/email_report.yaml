@@ -5,10 +5,10 @@
     username: "{{smtp_user}}"
     password: "{{smtp_pass}}"
     subject: "OpenShift Cluster Overview Report {{ '%Y-%m-%d' | strftime }}"
-    body: Please Open the attached HTML report in a modern web browser that is connected to the internet.
+    body: Please Open the attached HTML report in a modern javascript enabled web browser.
     from: "{{email_from}}"
     to: "{{email_recipients}}"
     attach:
-    - "OpenShift_Cluster_Overview_Report_{{ hostvars['localhost'].report_date }}.html"
+    - "{{playbook_dir}}/OpenShift_Cluster_Overview_Report_{{ hostvars['localhost'].report_date }}.html"
   delegate_to: localhost
   when: email_report

@@ -3,5 +3,5 @@
 - name: Generate Final Report
   template:
     src: report.j2
-    dest: "OpenShift_Cluster_Overview_Report_{{ hostvars['localhost'].report_date }}.html"
+    dest: "{{playbook_dir}}/OpenShift_Cluster_Overview_Report_{{ hostvars['localhost'].report_date }}.html"
   ignore_errors: yes
