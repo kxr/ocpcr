@@ -24,42 +24,44 @@
 
                 <td>{{n['cap']}}</td>
 
-                <td class="table-{%if n['t']/n['cap']*100 > 75%}danger{%else%}success{%endif%}">{{n['t']}}</td>
+                <td class="table-{%if n['t']/n['cap']*100 > 75%}danger{%else%}success{%endif%}" data-toggle="tooltip" data-placement="right" title="{{n['t_s']}}">
+                    {{n['t']}}
+                </td>
                 <td>
-                    <span class="badge badge-pill badge-success">{{n['r']}} Yes</span>
+                    <span class="badge badge-pill badge-success" data-toggle="tooltip" data-placement="right" title="{{n['r_s']}}">{{n['r']}} Yes</span>
                     {%if n['nr'] > 0 %}
-                    <span class="badge badge-pill badge-danger">{{n['nr']}} No</span>
+                    <span class="badge badge-pill badge-danger" data-toggle="tooltip" data-placement="right" title="{{n['nr_s']}}">{{n['nr']}} No</span>
                     {%else%}
                     <span class="badge badge-pill badge-success">{{n['nr']}} No</span>
                     {% endif %}
                 </td>
                 <td>
-                    <span class="badge badge-pill badge-success">{{n['cr']}} Yes</span>
+                    <span class="badge badge-pill badge-success" data-toggle="tooltip" data-placement="right" title="{{n['cr_s']}}">{{n['cr']}} Yes</span>
                     {% if n['cnr'] > 0 %}
-                    <span class="badge badge-pill badge-danger">{{n['cnr']}} No</span>
+                    <span class="badge badge-pill badge-danger" data-toggle="tooltip" data-placement="right" title="{{n['cnr_s']}}">{{n['cnr']}} No</span>
                     {%else%}
                     <span class="badge badge-pill badge-success">{{n['cnr']}} No</span>
                     {% endif %}
                 </td>
                 <td>
-                    <span class="badge badge-pill badge-success">{{n['i']}} Yes</span>
+                    <span class="badge badge-pill badge-success" data-toggle="tooltip" data-placement="right" title="{{n['i_s']}}">{{n['i']}} Yes</span>
                     {% if n['ni'] > 0 %}
-                    <span class="badge badge-pill badge-danger">{{n['ni']}} No</span>
+                    <span class="badge badge-pill badge-danger" data-toggle="tooltip" data-placement="right" title="{{n['ni_s']}}">{{n['ni']}} No</span>
                     {%else%}
                     <span class="badge badge-pill badge-success">{{n['ni']}} No</span>
                     {% endif %}
                 </td>
                 <td>
-                    <span class="badge badge-pill badge-success">{{n['ps']}} Yes</span>
+                    <span class="badge badge-pill badge-success" data-toggle="tooltip" data-placement="right" title="{{n['ps_s']}}">{{n['ps']}} Yes</span>
                     {%if n['pns'] > 0 %}
-                    <span class="badge badge-pill badge-danger">{{n['pns']}} No</span>
+                    <span class="badge badge-pill badge-danger" data-toggle="tooltip" data-placement="right" title="{{n['pns_s']}}">{{n['pns']}} No</span>
                     {%else%}
                     <span class="badge badge-pill badge-success">{{n['pns']}} No</span>
                     {% endif %}
                 </td>
                 <td>
                     {%if n['u'] > 0%}
-                    <span class="badge badge-pill badge-danger">{{n['u']}}</span>
+                    <span class="badge badge-pill badge-danger" data-toggle="tooltip" data-placement="right" title="{{n['u_s']}}">{{n['u']}}</span>
                     {%endif%}
                 </td>
             </tr>
@@ -76,39 +78,39 @@
                 {%endif%}
                 <td>
                     {%if ua['r'] > 0 %}
-                    <span class="badge badge-pill badge-success">{{ua['r']}}</span>
+                    <span class="badge badge-pill badge-success" data-toggle="tooltip" data-placement="right" title="{{ua['r_s']}}">{{ua['r']}}</span>
                     {% endif %}
                     {%if ua['nr'] > 0 %}
-                    <span class="badge badge-pill badge-danger">{{ua['nr']}}</span>
+                    <span class="badge badge-pill badge-danger" data-toggle="tooltip" data-placement="right" title="{{ua['nr_s']}}">{{ua['nr']}}</span>
                     {% endif %}
                 </td>
                 <td>
                     {%if ua['cr'] > 0 %}
-                    <span class="badge badge-pill badge-success">{{ua['cr']}}</span>
+                    <span class="badge badge-pill badge-success" data-toggle="tooltip" data-placement="right" title="{{ua['cr_s']}}">{{ua['cr']}}</span>
                     {% endif %}
                     {%if ua['cnr'] > 0 %}
-                    <span class="badge badge-pill badge-danger">{{ua['cnr']}}</span>
+                    <span class="badge badge-pill badge-danger" data-toggle="tooltip" data-placement="right" title="{{ua['cnr_s']}}">{{ua['cnr']}}</span>
                     {% endif %}
                 </td>
                 <td>
                     {%if ua['i'] > 0 %}
-                    <span class="badge badge-pill badge-success">{{ua['i']}}</span>
+                    <span class="badge badge-pill badge-success" data-toggle="tooltip" data-placement="right" title="{{ua['i_s']}}">{{ua['i']}}</span>
                     {% endif %}
                     {%if ua['ni'] > 0 %}
-                    <span class="badge badge-pill badge-danger">{{ua['ni']}}</span>
+                    <span class="badge badge-pill badge-danger" data-toggle="tooltip" data-placement="right" title="{{ua['ni_s']}}">{{ua['ni']}}</span>
                     {% endif %}
                 </td>
                 <td>
                     {%if ua['ps'] > 0 %}
-                    <span class="badge badge-pill badge-success">{{ua['ps']}}</span>
+                    <span class="badge badge-pill badge-success" data-toggle="tooltip" data-placement="right" title="{{ua['ps_s']}}">{{ua['ps']}}</span>
                     {% endif %}
                     {%if ua['pns'] > 0 %}
-                    <span class="badge badge-pill badge-danger">{{ua['pns']}}</span>
+                    <span class="badge badge-pill badge-danger" data-toggle="tooltip" data-placement="right" title="{{ua['pns_s']}}">{{ua['pns']}}</span>
                     {% endif %}
                 </td>
                 <td>
                     {%if ua['u'] > 0%}
-                    <span class="badge badge-pill badge-danger">{{ua['u']}}</span>
+                    <span class="badge badge-pill badge-danger" data-toggle="tooltip" data-placement="right" title="{{ua['u_s']}}">{{ua['u']}}</span>
                     {%endif%}
                 </td>
             </tr>

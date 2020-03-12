@@ -34,18 +34,26 @@
                 <td>{{ n['all_cpu'] | int }}m</td>
 
                 <td>
-                    {{ n['cpu_req'] | int }}m
-                    <div class="progress">
-                        <div class="progress-bar {% if cpu_req_per > 85 %}bg-danger{%elif cpu_req_per > 75%}bg-warning{% endif %}" role="progressbar" style="width: {{cpu_req_per|int}}%;" aria-valuenow="{{cpu_req_per|int}}" aria-valuemin="0" aria-valuemax="100">
-                            {{cpu_req_per|int}}%
+                    <div>
+                        <div style="width:49%;float:left">
+                            {{ n['cpu_req'] | int }}m
+                        </div>
+                        <div style="width:49%;float:right" class="progress">
+                            <div class="progress-bar {% if cpu_req_per > 85 %}bg-danger{%elif cpu_req_per > 75%}bg-warning{% endif %}" role="progressbar" style="width: {{cpu_req_per|int}}%;" aria-valuenow="{{cpu_req_per|int}}" aria-valuemin="0" aria-valuemax="100">
+                                {{cpu_req_per|int}}%
+                            </div>
                         </div>
                     </div>
                 </td>
                 <td>
-                    {{ n['cpu_lim'] | int }}m
-                    <div class="progress">
-                        <div class="progress-bar {% if cpu_lim_per > 85 %}bg-danger{%elif cpu_lim_per > 75%}bg-warning{% endif %}" role="progressbar" style="width: {{cpu_lim_per|int}}%;" aria-valuenow="{{cpu_lim_per|int}}" aria-valuemin="0" aria-valuemax="100">
-                            {{cpu_lim_per|int}}%
+                    <div>
+                        <div style="width:49%;float:left">
+                            {{ n['cpu_lim'] | int }}m
+                        </div>
+                        <div style="width:49%;float:right" class="progress">
+                            <div class="progress-bar {% if cpu_lim_per > 85 %}bg-danger{%elif cpu_lim_per > 75%}bg-warning{% endif %}" role="progressbar" style="width: {{cpu_lim_per|int}}%;" aria-valuenow="{{cpu_lim_per|int}}" aria-valuemin="0" aria-valuemax="100">
+                                {{cpu_lim_per|int}}%
+                            </div>
                         </div>
                     </div> 
                 </td>
@@ -53,19 +61,27 @@
                 <td>{{ n['all_mem'] | filesizeformat }}</td>
 
                 <td>
-                    {{ n['mem_req'] | filesizeformat }}
-                    <div class="progress">
-                        <div class="progress-bar {% if mem_req_per > 85 %}bg-danger{%elif mem_req_per > 75%}bg-warning{% endif %}" role="progressbar" style="width: {{mem_req_per|int}}%;" aria-valuenow="{{mem_req_per|int}}" aria-valuemin="0" aria-valuemax="100">
-                            {{mem_req_per|int}}%
+                    <div>
+                        <div style="width:49%;float:left">
+                            {{ n['mem_req'] | filesizeformat }}
+                        </div>
+                        <div style="width:49%;float:right" class="progress">
+                            <div class="progress-bar {% if mem_req_per > 85 %}bg-danger{%elif mem_req_per > 75%}bg-warning{% endif %}" role="progressbar" style="width: {{mem_req_per|int}}%;" aria-valuenow="{{mem_req_per|int}}" aria-valuemin="0" aria-valuemax="100">
+                                {{mem_req_per|int}}%
+                            </div>
                         </div>
                     </div>
                 </td>
 
                 <td>
-                    {{ n['mem_lim'] | filesizeformat }}
-                    <div class="progress">
-                        <div class="progress-bar {% if mem_lim_per > 85 %}bg-danger{%elif mem_lim_per > 75%}bg-warning{% endif %}" role="progressbar" style="width: {{mem_lim_per|int}}%;" aria-valuenow="{{mem_lim_per|int}}" aria-valuemin="0" aria-valuemax="100">
-                            {{mem_lim_per|int}}%
+                    <div>
+                        <div style="width:49%;float:left">
+                            {{ n['mem_lim'] | filesizeformat }}
+                        </div>
+                        <div style="width:49%;float:right" class="progress">
+                            <div class="progress-bar {% if mem_lim_per > 85 %}bg-danger{%elif mem_lim_per > 75%}bg-warning{% endif %}" role="progressbar" style="width: {{mem_lim_per|int}}%;" aria-valuenow="{{mem_lim_per|int}}" aria-valuemin="0" aria-valuemax="100">
+                                {{mem_lim_per|int}}%
+                            </div>
                         </div>
                     </div>
                 </td>

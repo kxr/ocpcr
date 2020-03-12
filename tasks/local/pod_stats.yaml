@@ -5,8 +5,7 @@
         /usr/bin/env python2 <<ENDOFSCRIPT
         import sys,json
         pod_stats={}
-        pod_stats["Unassigned"]={"cap":0,"t":0,"r":0,"nr":0,"i":0,"ni":0,"cr":0,"cnr":0,"ps":0,"pns":0,"u":0}
-        nodes=[]
+        pod_stats["Unassigned"]={"cap":0,"t":0,"t_s":{},"r":0,"r_s":{},"nr":0,"nr_s":{},"i":0,"i_s":{},"ni":0,"ni_s":{},"cr":0,"cr_s":{},"cnr":0,"cnr_s":{},"ps":0,"ps_s":{},"pns":0,"pns_s":{},"u":0,"u_s":{}}
         with open(".localtmphc/all_nodes") as nodes_json:
             nodes=json.load(nodes_json)["items"]
         pods=[]
@@ -15,7 +14,7 @@
         for n in nodes:
             nname=n["metadata"]["name"]
             all_pod=int(n["status"]["allocatable"]["pods"])
-            pod_stats[nname]={"cap":all_pod,"t":0,"r":0,"nr":0,"i":0,"ni":0,"cr":0,"cnr":0,"ps":0,"pns":0,"u":0}
+            pod_stats[nname]={"cap":all_pod,"t":0,"t_s":{},"r":0,"r_s":{},"nr":0,"nr_s":{},"i":0,"i_s":{},"ni":0,"ni_s":{},"cr":0,"cr_s":{},"cnr":0,"cnr_s":{},"ps":0,"ps_s":{},"pns":0,"pns_s":{},"u":0,"u_s":{}}
             for p in pods:
                 if p["spec"].has_key("nodeName") and p["spec"]["nodeName"]==nname:
                     x=nname
@@ -23,33 +22,67 @@
                     x='Unassigned'
                 else:
                     continue
+                if p["status"].has_key("phase") and len(p["status"]["phase"])>0:
+                    ph=p["status"]["phase"]
+                else:
+                    ph="Unkown"
                 pod_stats[x]["t"]+=1
+                pod_stats[x]["t_s"][ph]=pod_stats[x]["t_s"][ph]+1 if pod_stats[x]["t_s"].has_key(ph) else 1
                 if p["status"].has_key("conditions") and len(p["status"]["conditions"])>0:
                     for cond in p["status"]["conditions"]:
                         if cond["type"] == "Ready":
                             if cond["status"] == "True":
                                 pod_stats[x]["r"]+=1
+                                pod_stats[x]["r_s"][ph]=pod_stats[x]["r_s"][ph]+1 if pod_stats[x]["r_s"].has_key(ph) else 1
                             else:
                                 pod_stats[x]["nr"]+=1
+                                pod_stats[x]["nr_s"][ph]=pod_stats[x]["nr_s"][ph]+1 if pod_stats[x]["nr_s"].has_key(ph) else 1
                         elif cond["type"] == "Initialized":
                             if cond["status"] == "True":
                                 pod_stats[x]["i"]+=1
+                                pod_stats[x]["i_s"][ph]=pod_stats[x]["i_s"][ph]+1 if pod_stats[x]["i_s"].has_key(ph) else 1
                             else:
                                 pod_stats[x]["ni"]+=1
+                                pod_stats[x]["ni_s"][ph]=pod_stats[x]["ni_s"][ph]+1 if pod_stats[x]["ni_s"].has_key(ph) else 1
                         elif cond["type"] == "ContainersReady":
                             if cond["status"] == "True":
                                 pod_stats[x]["cr"]+=1
+                                pod_stats[x]["cr_s"][ph]=pod_stats[x]["cr_s"][ph]+1 if pod_stats[x]["cr_s"].has_key(ph) else 1
                             else:
                                 pod_stats[x]["cnr"]+=1
+                                pod_stats[x]["cnr_s"][ph]=pod_stats[x]["cnr_s"][ph]+1 if pod_stats[x]["cnr_s"].has_key(ph) else 1
                         elif cond["type"] == "PodScheduled":
                             if cond["status"] == "True":
                                 pod_stats[x]["ps"]+=1
+                                pod_stats[x]["ps_s"][ph]=pod_stats[x]["ps_s"][ph]+1 if pod_stats[x]["ps_s"].has_key(ph) else 1
                             else:
                                 pod_stats[x]["pns"]+=1
+                                pod_stats[x]["pns_s"][ph]=pod_stats[x]["psn_s"][ph]+1 if pod_stats[x]["pns_s"].has_key(ph) else 1
                         else:
                             print "This should never happen"
                 else:
                     pod_stats[x]["u"]+=1
+                    pod_stats[x]["u_s"][ph]=pod_stats[x]["u_s"][ph]+1 if pod_stats[x]["u_s"].has_key(ph) else 1
+            pod_stats[nname]["t_s"]=", ".join([ str(k)+":"+str(v) for k,v in pod_stats[nname]["t_s"].items()])
+            pod_stats[nname]["r_s"]=", ".join([ str(k)+":"+str(v) for k,v in pod_stats[nname]["r_s"].items()])
+            pod_stats[nname]["nr_s"]=", ".join([ str(k)+":"+str(v) for k,v in pod_stats[nname]["nr_s"].items()])
+            pod_stats[nname]["i_s"]=", ".join([ str(k)+":"+str(v) for k,v in pod_stats[nname]["i_s"].items()])
+            pod_stats[nname]["ni_s"]=", ".join([ str(k)+":"+str(v) for k,v in pod_stats[nname]["ni_s"].items()])
+            pod_stats[nname]["cr_s"]=", ".join([ str(k)+":"+str(v) for k,v in pod_stats[nname]["cr_s"].items()])
+            pod_stats[nname]["cnr_s"]=", ".join([ str(k)+":"+str(v) for k,v in pod_stats[nname]["cnr_s"].items()])
+            pod_stats[nname]["ps_s"]=", ".join([ str(k)+":"+str(v) for k,v in pod_stats[nname]["ps_s"].items()])
+            pod_stats[nname]["pns_s"]=", ".join([ str(k)+":"+str(v) for k,v in pod_stats[nname]["pns_s"].items()])
+            pod_stats[nname]["u_s"]=", ".join([ str(k)+":"+str(v) for k,v in pod_stats[nname]["u_s"].items()])
+        pod_stats["Unassigned"]["t_s"]=", ".join([ str(k)+":"+str(v) for k,v in pod_stats["Unassigned"]["t_s"].items()])
+        pod_stats["Unassigned"]["r_s"]=", ".join([ str(k)+":"+str(v) for k,v in pod_stats["Unassigned"]["r_s"].items()])
+        pod_stats["Unassigned"]["nr_s"]=", ".join([ str(k)+":"+str(v) for k,v in pod_stats["Unassigned"]["nr_s"].items()])
+        pod_stats["Unassigned"]["i_s"]=", ".join([ str(k)+":"+str(v) for k,v in pod_stats["Unassigned"]["i_s"].items()])
+        pod_stats["Unassigned"]["ni_s"]=", ".join([ str(k)+":"+str(v) for k,v in pod_stats["Unassigned"]["ni_s"].items()])
+        pod_stats["Unassigned"]["cr_s"]=", ".join([ str(k)+":"+str(v) for k,v in pod_stats["Unassigned"]["cr_s"].items()])
+        pod_stats["Unassigned"]["cnr_s"]=", ".join([ str(k)+":"+str(v) for k,v in pod_stats["Unassigned"]["cnr_s"].items()])
+        pod_stats["Unassigned"]["ps_s"]=", ".join([ str(k)+":"+str(v) for k,v in pod_stats["Unassigned"]["ps_s"].items()])
+        pod_stats["Unassigned"]["pns_s"]=", ".join([ str(k)+":"+str(v) for k,v in pod_stats["Unassigned"]["pns_s"].items()])
+        pod_stats["Unassigned"]["u_s"]=", ".join([ str(k)+":"+str(v) for k,v in pod_stats["Unassigned"]["u_s"].items()])
         pod_stats_list=[]
         for n,r in pod_stats.items():
             r["name"]=n
@@ -61,3 +94,13 @@
 
 #- debug:
 #    var: pod_stats
+
+# God bless me if I ever had to debug this
+# Non-obvious abbreviation guide for my future self:
+# t=total
+# r=ready, nr=not ready
+# i=initialized, ni=not initialized
+# cr=containers ready, cnr= containers not ready
+# ps=pod scheduled, pns=pod not scheduled
+# u=unknow i.e conditions missing
+# *_s=pod phase statistics to be gathered at the end for each node
