@@ -14,7 +14,6 @@
         </thead>
         <tbody>
             {% for on in hostvars['localhost'].ordered_nodes.stdout | from_json %}
-                {% set n = hostvars['localhost'].node_info.stdout | from_json | json_query("[?name=='"+on['name']+"']") | first %}
                 <tr>
                     <th scope="row">
                         {% include 'includes/sub/node_name.j2' %}
@@ -39,7 +38,7 @@
                     </td>
                     <td>
                         {{on['roles'] | join(', ')}}
-                        <a class="badge badge-info" data-toggle="collapse" href="#Labels-{{on['sname']}}" role="button">></a>
+                        <a class="badge badge-light" data-toggle="collapse" href="#Labels-{{on['sname']}}" role="button">&#8631;</a>
                         <div class="collapse" id="Labels-{{on['sname']}}">
                         <pre>{{on['labels']}}</pre>
                         </div>
