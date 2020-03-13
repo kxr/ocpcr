@@ -1,0 +1,53 @@
+<h3 style="text-align: center">Node Summary</h3>
+
+<div class="container">
+    <table class="table table-hover table-sm table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Node</th>
+                <th scope="col">Node Name</th>
+                <th scope="col">FQDN</th>
+                <th scope="col">IP Address</th>
+                <th scope="col">Roles/Labels</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for on in hostvars['localhost'].ordered_nodes.stdout | from_json %}
+                {% set n = hostvars['localhost'].node_info.stdout | from_json | json_query("[?name=='"+on['name']+"']") | first %}
+                <tr>
+                    <th scope="row">
+                        {% include 'includes/sub/node_name.j2' %}
+                    </th>
+                    <td>
+                        {{on['name']}}
+                    </td>
+                    <td>
+                        {% if on['inv_hname'] != "" and 'ansible_fqdn' in hostvars[on['inv_hname']] %}
+                            {{ hostvars[on['inv_hname']].ansible_fqdn }}
+                        {% else %}
+                            <span class="badge badge-pill badge-danger">!</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if on['inv_hname'] != "" and 'ansible_default_ipv4' in hostvars[on['inv_hname']] %}
+                            {{ hostvars[on['inv_hname']].ansible_default_ipv4.interface }}:
+                            {{ hostvars[on['inv_hname']].ansible_default_ipv4.address }}
+                        {% else %}
+                            <span class="badge badge-pill badge-danger">!</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{on['roles'] | join(', ')}}
+                        <a class="badge badge-info" data-toggle="collapse" href="#Labels-{{on['sname']}}" role="button">></a>
+                        <div class="collapse" id="Labels-{{on['sname']}}">
+                        <pre>{{on['labels']}}</pre>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor%}
+        </tbody>
+    </table>
+</div>
+<hr />
+<br />
