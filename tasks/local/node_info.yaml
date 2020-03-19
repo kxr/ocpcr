@@ -62,6 +62,16 @@
                 elif vars.has_key('openshift_public_hostname') and vars['openshift_public_hostname']==name:
                     inv_hname=h
                     break
+                elif vars.has_key('ansible_hostname') and vars['ansible_hostname']==name.split('.')[0]:
+                    inv_hname=h
+                    break
+                elif vars.has_key('ansible_fqdn') and vars['ansible_fqdn']==name.split('.')[0]:
+                    inv_hname=h
+                    break
+                elif vars.has_key('ansible_nodename') and vars['ansible_nodename']==name.split('.')[0]:
+                    inv_hname=h
+                    break
+                
         
             sname=name.split('.')[0]
         
