@@ -6,6 +6,9 @@
         <style>
             {% include 'includes/bootstrap/bootstrap.min.css' %}
         </style>
+        <style>
+            {% include 'includes/bootstrap/bootstrap-select.min.css' %}
+        </style>
         <title>OpenShift Cluster Overview Report {{report_date}} </title>
         {% include 'includes/styles.j2' %}
     </head>
@@ -38,7 +41,12 @@
         </script>
 
         <script>
+            {% include 'includes/bootstrap/bootstrap-select.min.js' %}
+        </script>
+        
+        <script>
             {% include 'includes/javascript.j2' %}
         </script>
+
   </body>
 </html>

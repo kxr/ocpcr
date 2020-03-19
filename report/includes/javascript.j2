@@ -1,3 +1,38 @@
 $(function () {
       $('[data-toggle="tooltip"]').tooltip()
 })
+
+// Node Filtering
+$(document).ready(function(){
+      $("#node-filter").change(function() {
+            var rolesSelected = $(this).val();
+            if (rolesSelected.length > 0) {
+                  $('span#filter-span').filter(
+                  function(){
+                        rolesArray=$(this).text().split(/(\s+)/);
+                        return !rolesSelected.some(v => rolesArray.includes(v));
+                  }
+                  ).closest('tr').hide();
+                  $('span#filter-span').filter(
+                  function(){
+                        rolesArray=$(this).text().split(/(\s+)/);
+                        return rolesSelected.some(v => rolesArray.includes(v));
+                  }
+                  ).closest('tr').show();
+            }
+            else {
+                  $('tr').show();
+            }
+      });
+});
+
+// Bootstrap Select Picker 
+$('#node-filter').selectpicker(
+      {
+            noneSelectedText: "Node Filter",
+            actionsBox: true,
+            liveSearch: true,
+            style: "btn-dark btn-outline-success",
+            width: "20rem"
+      }
+);
