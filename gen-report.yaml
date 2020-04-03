@@ -1,0 +1,41 @@
+
+---
+#
+# Process Cluster Info Locally
+#
+- hosts: localhost
+  connection: local
+  tasks:
+  - import_tasks: tasks/local/dump_hostvars.yaml
+  - import_tasks: tasks/local/node_info.yaml
+  - import_tasks: tasks/local/node_resources.yaml
+  - import_tasks: tasks/local/pod_stats.yaml
+  - import_tasks: tasks/local/core_pods.yaml
+
+
+#
+# Generating the Final Report
+# Output: Health_Check_Report_<date>.html 
+#
+- hosts: localhost
+  connection: local
+  tasks:
+  - import_tasks: report/generate_report.yaml
+
+#
+# Email the report
+#
+- hosts: localhost
+  connection: local
+  vars:
+    email_report: False
+    email_from: cluster-report@email.com (OpenShift Cluster Overview)
+    email_recipients:
+      - khizer@email.com
+      - someone@email.com
+    smtp_host: smtp.gmail.com
+    smtp_port: 587
+    smtp_user: smtp_auth_user@email.com
+    smtp_pass: xxxxxx
+  tasks:
+  - import_tasks: report/email_report.yaml
