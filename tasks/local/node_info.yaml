@@ -23,7 +23,7 @@
         with open(".localtmphc/all_nodes") as nodes_json:
             nodes=json.load(nodes_json)["items"]
         for n in nodes:
-            name=n["metadata"]["name"]
+            name=n["metadata"]["name"].lower()
             labels="\n".join([":".join([k,v]) for k,v in n["metadata"]["labels"].items()])
         
         #TODO If len(nodes) != len(hvars) Show warning
