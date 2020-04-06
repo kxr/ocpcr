@@ -53,22 +53,22 @@
                 elif vars.has_key('ansible_hostname') and vars['ansible_hostname'].lower()== name:
                     inv_hname=h
                     break
-                elif vars.has_key('ansible_fqdn') and vars['ansible_fqdn'].lower()== name:
+                elif vars.has_key('ansible_fqdn') and vars['ansible_fqdn'].lower() == name:
                     inv_hname=h
                     break
                 elif vars.has_key('ansible_nodename') and vars['ansible_nodename'].lower()== name:
                     inv_hname=h
                     break
-                elif vars.has_key('openshift_public_hostname') and vars['openshift_public_hostname']== name:
+                elif vars.has_key('openshift_public_hostname') and vars['openshift_public_hostname'].lower() == name:
                     inv_hname=h
                     break
-                elif vars.has_key('ansible_hostname') and vars['ansible_hostname'].lower() ==name.split('.')[0]:
+                elif vars.has_key('ansible_hostname') and vars['ansible_hostname'].lower() == name.split('.')[0]:
                     inv_hname=h
                     break
-                elif vars.has_key('ansible_fqdn') and vars['ansible_fqdn'].lower() ==name.split('.')[0]:
+                elif vars.has_key('ansible_fqdn') and vars['ansible_fqdn'].lower() == name.split('.')[0]:
                     inv_hname=h
                     break
-                elif vars.has_key('ansible_nodename') and vars['ansible_nodename'].lower() ==name.split('.')[0]:
+                elif vars.has_key('ansible_nodename') and vars['ansible_nodename'].lower() == name.split('.')[0]:
                     inv_hname=h
                     break
                 
