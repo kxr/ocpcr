@@ -57,7 +57,7 @@
                                 pod_stats[x]["ps_s"][ph]=pod_stats[x]["ps_s"][ph]+1 if pod_stats[x]["ps_s"].has_key(ph) else 1
                             else:
                                 pod_stats[x]["pns"]+=1
-                                pod_stats[x]["pns_s"][ph]=pod_stats[x]["psn_s"][ph]+1 if pod_stats[x]["pns_s"].has_key(ph) else 1
+                                pod_stats[x]["pns_s"][ph]=pod_stats[x]["pns_s"][ph]+1 if pod_stats[x]["pns_s"].has_key(ph) else 1
                         else:
                             print "This should never happen"
                 else:
