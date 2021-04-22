@@ -45,3 +45,21 @@
     warn: False
   register: etcd_disk_used
   ignore_errors: yes
+
+- name: ETCD quota size
+  shell:
+    cmd: |
+        grep "ETCD_QUOTA_BACKEND_BYTES" /etc/etcd/etcd.conf | awk -F= '{print $2}'
+    warn: False
+  register: etcd_quota_size
+  ignore_errors: yes
+
+- name: ETCD database size
+  shell:
+    cmd: |
+      source /etc/profile.d/etcdctl.sh
+      source /etc/etcd/etcd.conf
+      etcdctl3 --cert=$ETCD_PEER_CERT_FILE --key=$ETCD_PEER_KEY_FILE --cacert=/etc/etcd/ca.crt --endpoints=$ETCD_LISTEN_CLIENT_URLS endpoint status -w fields | grep DBSize | head -n1 | awk -F": " '{print $2}'
+    warn: False
+  register: etcd_database_size
+  ignore_errors: yes
