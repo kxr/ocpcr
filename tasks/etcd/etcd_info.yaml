@@ -46,6 +46,14 @@
   register: etcd_disk_used
   ignore_errors: yes
 
+- name: ETCD quota size
+  shell:
+    cmd: |
+        grep "ETCD_QUOTA_BACKEND_BYTES" /etc/etcd/etcd.conf | awk -F= '{print $2}'
+    warn: False
+  register: etcd_quota_size
+  ignore_errors: yes
+
 - name: ETCD database size
   shell:
     cmd: |
