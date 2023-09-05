@@ -15,6 +15,12 @@ If you would like to request a new component/features in the report, please open
 
 # Usage
 
+Install the required `python-jmespath` package:
+
+```bash
+sudo yum install python-jmespath -y
+```
+
 Clone/copy this repository on the ansible node of the cluster:
 
 ```bash
